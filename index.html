@@ -93,14 +93,110 @@
          */
         async function fetchImagesFromGitHub() {
             // 這個 URL 用於向 GitHub API 請求指定倉庫資料夾的內容
-            // 語法已修正，確保沒有多餘的字符
-            const url = `https://api.github.com/repos/<span class="math-inline">\{owner\}/</span>{repo}/contents/${imageFolderPath}`;
+            // *** 這是關鍵：確保這行是正確的，沒有多餘的 <span> 標籤或 \ 符號 ***
+            const url = `https://api.github.com/repos/${owner}/${repo}/contents/${imageFolderPath}`;
             try {
                 const response = await fetch(url);
                 if (!response.ok) {
                     // 如果請求不成功 (例如 403 Forbidden, 404 Not Found)，拋出錯誤
-                    throw new Error(`GitHub API 錯誤: <span class="math-inline">\{response\.statusText\} \(</span>{response.status})`);
+                    // *** 確保這行是正確的，沒有多餘的 <span> 標籤或 \ 符號 ***
+                    throw new Error(`GitHub API 錯誤: ${response.statusText} (${response.status})`);
                 }
                 const data = await response.json();
 
                 // 過濾出圖片檔案 (確保是文件類型且副檔名是圖片)，並建立圖片資料物件
+                allImageData = data
+                    .filter(item => item.type === 'file' && /\.(png|jpg|jpeg|gif|webp|avif)$/i.test(item.name))
+                    .sort((a, b) => a.name.localeCompare(b.name)) // 按檔名字母順序排序
+                    .map(item => ({
+                        src: item.download_url, // GitHub 提供直接下載的 URL
+                        alt: item.name,        // 圖片替代文字，預設為檔名
+                        location: item.name.split('.')[0].replace(/[-_]/g, ' '), // 地點名稱，預設為檔名（去除副檔名和連字號/底線）
+                        link: '#'              // 預設連結，如果需要，可以手動修改或從其他資料源獲取
+                    }));
+
+                // 成功獲取圖片資料後，顯示第一頁圖片並渲染分頁按鈕
+                displayImages(currentPage);
+                renderPagination();
+
+            } catch (error) {
+                console.error("獲取圖片失敗:", error);
+                // 向用戶顯示錯誤訊息，幫助他們診斷問題
+                imageGrid.innerHTML = `<p class="text-red-500 text-center">無法載入圖片。錯誤訊息: ${error.message}。請檢查 GitHub 倉庫設定、權限或網路連線。</p>`;
+            }
+        }
+
+        /**
+         * 根據頁碼顯示對應的圖片
+         * @param {number} page - 要顯示的頁碼
+         */
+        function displayImages(page) {
+            imageGrid.innerHTML = ''; // 清空圖片網格，準備載入新圖片
+            const startIndex = (page - 1) * imagesPerPage; // 計算起始圖片索引
+            const endIndex = startIndex + imagesPerPage;   // 計算結束圖片索引
+            const currentImages = allImageData.slice(startIndex, endIndex); // 從總圖片資料中截取當前頁的圖片
+
+            currentImages.forEach(image => {
+                const imageContainer = document.createElement('div');
+                // 為圖片容器添加 Tailwind CSS 類別和自訂樣式
+                imageContainer.classList.add(
+                    'image-container', 'relative', 'overflow-hidden', 'rounded-md', 'shadow-lg', 'bg-gray-800'
+                );
+
+                const img = document.createElement('img');
+                img.src = image.src; // 圖片來源路徑
+                img.alt = image.alt; // 圖片替代文字
+                img.classList.add('w-full', 'h-auto', 'block'); // 確保圖片填滿容器並保持其區塊特性
+
+                const overlay = document.createElement('div');
+                overlay.classList.add('overlay'); // 浮層樣式
+
+                const link = document.createElement('a');
+                link.href = image.link;       // 超連結
+                link.textContent = image.location; // 顯示地點名稱
+                link.target = '_blank';      // 在新分頁打開連結
+                link.rel = 'noopener noreferrer'; // 安全性考量，搭配 target="_blank" 使用
+                overlay.appendChild(link);
+
+                imageContainer.appendChild(img);
+                imageContainer.appendChild(overlay);
+                imageGrid.appendChild(imageContainer); // 將圖片容器添加到網格中
+            });
+        }
+
+        /**
+         * 渲染分頁按鈕
+         */
+        function renderPagination() {
+            paginationDiv.innerHTML = ''; // 清空分頁按鈕容器，準備重新渲染
+            const totalPages = Math.ceil(allImageData.length / imagesPerPage); // 計算總頁數
+
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement('button');
+                button.textContent = i; // 按鈕文字為頁碼
+                // 為分頁按鈕添加 Tailwind CSS 類別，設定基本樣式和過渡效果
+                button.classList.add('px-4', 'py-2', 'mx-1', 'rounded', 'focus:outline-none', 'transition-colors', 'duration-200');
+
+                if (i === currentPage) {
+                    // 當前頁的按鈕樣式 (更突出)
+                    button.classList.add('bg-gray-700', 'text-white', 'shadow-md');
+                } else {
+                    // 其他頁的按鈕樣式
+                    button.classList.add('bg-gray-300', 'text-gray-800', 'hover:bg-gray-400');
+                    button.addEventListener('click', () => {
+                        currentPage = i;           // 更新當前頁碼
+                        displayImages(currentPage); // 顯示新頁的圖片
+                        renderPagination();        // 重新渲染分頁按鈕，更新活躍狀態
+                        window.scrollTo({ top: 0, behavior: 'smooth' }); // 點擊分頁後平滑捲動到頁面頂部
+                    });
+                }
+                paginationDiv.appendChild(button); // 將按鈕添加到分頁容器中
+            }
+        }
+
+        // --- 頁面載入時執行 ---
+        // 頁面載入完成後，呼叫函式從 GitHub 獲取圖片資料並初始化網站顯示
+        fetchImagesFromGitHub();
+    </script>
+</body>
+</html>
