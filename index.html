@@ -1,195 +1,106 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="zh-TW">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.5">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 12.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000}
-    p.p2 {margin: 0.0px 0.0px 12.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000; min-height: 14.0px}
-    span.s1 {font-kerning: none}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Li's photo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 網站背景設為全黑，文字為白色 */
+        body {
+            background-color: #000;
+            color: #fff;
+            /* 未來如果要改成圖片背景，可以取消下面註解並修改路徑 */
+            /* background-image: url('images/your_background_image.jpg'); */
+            /* background-size: cover; */
+            /* background-position: center; */
+            /* background-attachment: fixed; */
+        }
+        /* 圖片容器的基礎樣式，用於實現 hover 效果 */
+        .image-container {
+            position: relative;
+            overflow: hidden; /* 確保內容不會溢出 */
+            aspect-ratio: 1 / 1; /* 保持圖片容器為正方形，避免圖片拉伸變形 */
+        }
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 讓圖片填滿容器並保持比例 */
+            transition: transform 0.3s ease; /* 為圖片的縮放添加平滑過渡 */
+        }
+        /* 圖片 hover 時的縮放效果 */
+        .image-container:hover img {
+            transform: scale(1.05); /* 圖片輕微放大 */
+        }
+        /* 浮層 (地點名稱) 樣式 */
+        .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* 半透明黑色背景 */
+            padding: 10px;
+            text-align: center;
+            opacity: 0; /* 初始時隱藏 */
+            transition: opacity 0.3s ease; /* 為透明度變化添加平滑過渡 */
+            pointer-events: none; /* 讓滑鼠事件能穿透到下方的圖片 */
+        }
+        /* 當圖片容器 hover 時，顯示浮層 */
+        .image-container:hover .overlay {
+            opacity: 1;
+            pointer-events: auto; /* 顯示時允許滑鼠事件 */
+        }
+        /* 浮層內的連結樣式 */
+        .overlay a {
+            color: #fff; /* 連結文字為白色 */
+            text-decoration: none; /* 去除下劃線 */
+            font-weight: bold;
+        }
+        .overlay a:hover {
+            text-decoration: underline; /* hover 時顯示下劃線 */
+        }
+    </style>
 </head>
-<body>
-<p class="p1"><span class="s1">&lt;!DOCTYPE html&gt;</span></p>
-<p class="p1"><span class="s1">&lt;html lang="zh-TW"&gt;</span></p>
-<p class="p1"><span class="s1">&lt;head&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;title&gt;Li's photo&lt;/title&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;style&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>body {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>background-color: #000;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>color: #fff;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.image-container {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>position: relative;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>overflow: hidden;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>aspect-ratio: 1 / 1;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.image-container img {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>width: 100%;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>height: 100%;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>object-fit: cover;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>transition: transform 0.3s ease;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.image-container:hover img {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>transform: scale(1.05);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.overlay {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>position: absolute;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>bottom: 0;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>left: 0;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>width: 100%;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>background-color: rgba(0, 0, 0, 0.7);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>padding: 10px;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>text-align: center;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>opacity: 0;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>transition: opacity 0.3s ease;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>pointer-events: none;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.image-container:hover .overlay {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>opacity: 1;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>pointer-events: auto;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.overlay a {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>color: #fff;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>text-decoration: none;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-weight: bold;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.overlay a:hover {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>text-decoration: underline;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/head&gt;</span></p>
-<p class="p1"><span class="s1">&lt;body class="font-sans"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;header class="py-6 text-center"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;h1 class="text-3xl font-bold"&gt;Li's photo&lt;/h1&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/header&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;main class="container mx-auto px-4 py-8"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div id="image-grid" class="grid gap-4 md:grid-cols-3 grid-cols-1"&gt;&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div id="pagination" class="flex justify-center mt-8"&gt;&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/main&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;script&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// --- 設定你的 GitHub 倉庫資訊 ---</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const owner = 'lkh098'; // 例如: 'your-username'</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const repo = 'my-travel-photos-site'; <span class="Apple-converted-space">      </span>// 例如: 'my-travel-photos-site'</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const imageFolderPath = 'images';<span class="Apple-converted-space">  </span>// 圖片在倉庫中的路徑，例如 'images'</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const imagesPerPage = 9;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>let currentPage = 1;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>let allImageData = []; // 用於儲存從 GitHub API 獲取的所有圖片資料</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const imageGrid = document.getElementById('image-grid');</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const paginationDiv = document.getElementById('pagination');</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>/**</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">         </span>* 從 GitHub API 獲取圖片檔案列表</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">         </span>*/</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>async function fetchImagesFromGitHub() {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const url = `https://api.github.com/repos/&lt;span class="math-inline"&gt;\{owner\}/&lt;/span&gt;{repo}/contents/${imageFolderPath}`;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>try {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>const response = await fetch(url);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>if (!response.ok) {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>throw new Error(`GitHub API 錯誤: ${response.statusText}`);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>const data = await response.json();</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>// 過濾出圖片檔案，並建立圖片資料物件</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>allImageData = data</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>.filter(item =&gt; item.type === 'file' &amp;&amp; /\.(png|jpg|jpeg|gif|webp|avif)$/i.test(item.name))</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>.sort((a, b) =&gt; a.name.localeCompare(b.name)) // 按檔名排序</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>.map(item =&gt; ({</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>src: item.download_url, // GitHub 提供直接下載的 URL</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>alt: item.name,</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>location: item.name.split('.')[0].replace(/[-_]/g, ' '), // 預設為檔名，去除副檔名和連字號/底線</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>link: '#' // 預設連結，需要手動或透過其他方式補充</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>}));</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>// 獲取圖片後，再顯示第一頁圖片並渲染分頁</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>displayImages(currentPage);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>renderPagination();</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>} catch (error) {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>console.error("獲取圖片失敗:", error);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>imageGrid.innerHTML = '&lt;p class="text-red-500 text-center"&gt;無法載入圖片。請檢查 GitHub 設定或網路連線。&lt;/p&gt;';</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>/**</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">         </span>* 根據頁碼顯示對應的圖片</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">         </span>* @param {number} page - 要顯示的頁碼</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">         </span>*/</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>function displayImages(page) {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>imageGrid.innerHTML = '';</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const startIndex = (page - 1) * imagesPerPage;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const endIndex = startIndex + imagesPerPage;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const currentImages = allImageData.slice(startIndex, endIndex);</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>currentImages.forEach(image =&gt; {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>const imageContainer = document.createElement('div');</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>imageContainer.classList.add(</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>'image-container', 'relative', 'overflow-hidden', 'rounded-md', 'shadow-lg', 'bg-gray-800'</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>);</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>const img = document.createElement('img');</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>img.src = image.src;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>img.alt = image.alt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>img.classList.add('w-full', 'h-auto', 'block');</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>const overlay = document.createElement('div');</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>overlay.classList.add('overlay');</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>const link = document.createElement('a');</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>link.href = image.link;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>link.textContent = image.location;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>link.target = '_blank';</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>link.rel = 'noopener noreferrer';</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>overlay.appendChild(link);</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>imageContainer.appendChild(img);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>imageContainer.appendChild(overlay);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>imageGrid.appendChild(imageContainer);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>});</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>/**</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">         </span>* 渲染分頁按鈕</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">         </span>*/</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>function renderPagination() {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>paginationDiv.innerHTML = '';</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const totalPages = Math.ceil(allImageData.length / imagesPerPage);</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>for (let i = 1; i &lt;= totalPages; i++) {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>const button = document.createElement('button');</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>button.textContent = i;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>button.classList.add('px-4', 'py-2', 'mx-1', 'rounded', 'focus:outline-none', 'transition-colors', 'duration-200');</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>if (i === currentPage) {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>button.classList.add('bg-gray-700', 'text-white', 'shadow-md');</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>} else {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>button.classList.add('bg-gray-300', 'text-gray-800', 'hover:bg-gray-400');</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>button.addEventListener('click', () =&gt; {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>currentPage = i;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>displayImages(currentPage);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>renderPagination();</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>window.scrollTo({ top: 0, behavior: 'smooth' });</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>});</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>paginationDiv.appendChild(button);</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// --- 頁面載入時執行 ---</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// 呼叫函式從 GitHub 獲取圖片並初始化網站</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>fetchImagesFromGitHub();</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/body&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/html&gt;</span></p>
-</body>
-</html>
+<body class="font-sans">
+    <header class="py-6 text-center">
+        <h1 class="text-3xl font-bold">Li's photo</h1>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <div id="image-grid" class="grid gap-4 md:grid-cols-3 grid-cols-1">
+            </div>
+
+        <div id="pagination" class="flex justify-center mt-8">
+            </div>
+    </main>
+
+    <script>
+        // --- 設定你的 GitHub 倉庫資訊 ---
+        // 請確保這裡填寫的是正確的 GitHub 使用者名稱和倉庫名稱
+        const owner = 'lkh098';             // 替換為你的 GitHub 使用者名稱
+        const repo = 'my-travel-photos-site'; // 替換為你的 GitHub 倉庫名稱
+        const imageFolderPath = 'images';   // 圖片在倉庫中的路徑，例如 'images'
+
+        const imagesPerPage = 9; // 每頁顯示 9 張圖片
+        let currentPage = 1;     // 當前頁碼，初始為第一頁
+        let allImageData = [];   // 用於儲存從 GitHub API 獲取的所有圖片資料
+
+        const imageGrid = document.getElementById('image-grid');
+        const paginationDiv = document.getElementById('pagination');
+
+        /**
+         * 從 GitHub API 獲取圖片檔案列表
+         */
+        async function fetchImagesFromGitHub() {
+            // 這個 URL 用於向 GitHub API 請求指定倉庫資料夾的內容
+            // 語法已修正，確保沒有多餘的字符
+            const url = `https://api.github.com/repos/<span class="math-inline">\{owner\}/</span>{repo}/contents/${imageFolderPath}`;
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    // 如果請求不成功 (例如 403 Forbidden, 404 Not Found)，拋出錯誤
+                    throw new Error(`GitHub API 錯誤: <span class="math-inline">\{response\.statusText\} \(</span>{response.status})`);
+                }
+                const data = await response.json();
+
+                // 過濾出圖片檔案 (確保是文件類型且副檔名是圖片)，並建立圖片資料物件
