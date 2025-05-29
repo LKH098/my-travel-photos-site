@@ -1,0 +1,38 @@
+# backend 定義如何連接到你的 Git 倉庫
+backend:
+  name: github
+  repo: LKH098/my-travel-photos-site # <-- 替換為你的 GitHub 使用者名稱/倉庫名稱 (例如: LKH098/my-travel-photos-site)，注意大小寫必須完全一致！
+  branch: main # <-- 你的倉庫主分支名稱，通常是 main
+  base_url: https://github.com # 預設就是 github.com
+  auth_proxy: https://decap-cms-oauth.netlify.app/auth # Decap CMS 官方提供的 OAuth 代理服務，用於 GitHub 登入
+
+# media_folder 定義 CMS 上傳圖片的資料夾路徑 (相對倉庫根目錄)
+media_folder: "images" 
+# public_folder 定義圖片在網站上公開的資料夾路徑 (相對網站根目錄)
+public_folder: "images" 
+
+# collections 定義你要管理哪些內容，這裡我們管理 data.json
+collections:
+  - name: "photos" # 集合的內部名稱 (自訂，例如 photos)
+    label: "我的旅行照片" # 在 CMS 介面中顯示的名稱
+    folder: "/" # 內容儲存在倉庫的根目錄
+    format: "json" # 檔案格式是 JSON
+    file: "data.json" # <-- 這是你要編輯的 JSON 檔案路徑
+    editor:
+      preview: false # 關閉即時預覽，因為我們的網站較複雜難以即時預覽
+
+    # fields 定義 data.json 結構中的欄位，這些會變成 CMS 後台的表單輸入框
+    fields:
+      # 這個欄位對應 data.json 中的 "items" 陣列
+      - label: "所有圖片列表" # 在 CMS 中顯示的標籤
+        name: "items" # 對應 data.json 中的 "items" 鍵
+        widget: "list" # 表示這是一個列表 (陣列)，CMS 會為每個項目提供一個編輯介面
+        summary: "{{fields.location}} - {{fields.description}}" # 在列表中顯示每個項目的摘要 (可選)
+
+        # 列表中的每個項目 (即每個圖片物件) 的詳細欄位
+        fields:
+          - {label: "圖片檔案", name: "src", widget: "image", required: true, media_folder: "images", public_folder: "images", hint: "從這裡上傳圖片或選擇已上傳的圖片"} # <-- 這裡支援圖片上傳！
+          - {label: "替代文字 (Alt)", name: "alt", widget: "string", required: false, hint: "用於無障礙和SEO，建議填寫"}
+          - {label: "地點名稱", name: "location", widget: "string", required: true, hint: "例如：東京晴空塔"}
+          - {label: "照片描述", name: "description", widget: "text", required: false, hint: "簡短描述照片或地點"}
+          - {label: "Google 地圖連結", name: "mapLink", widget: "string", required: false, pattern: "^(https?:\\/\\/maps\\.app\\.goo\\.gl\\/|https?:\\/\\/www\\.google\\.com\\/maps\\/|)$", hint: "請貼上完整的 Google 地圖 URL，留空則不顯示連結"} # 空字串也算有效
