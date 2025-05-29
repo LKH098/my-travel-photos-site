@@ -1,18 +1,20 @@
 # backend 定義如何連接到你的 Git 倉庫
 backend:
   name: github
-  repo: LKH098/my-travel-photos-site # <-- 替換為你的 GitHub 使用者名稱/倉庫名稱 (注意大小寫必須完全一致！)
+  repo: LKH098/my-travel-photos-site # <-- 再次確認：替換為你的 GitHub 使用者名稱/倉庫名稱 (例如: LKH098/my-travel-photos-site)，注意大小寫必須完全一致！
   branch: main # <-- 你的倉庫主分支名稱，通常是 main
-  base_url: https://github.com # 預設就是 github.com
-  auth_proxy: https://decap-cms-oauth.netlify.app/auth # Decap CMS 官方提供的 OAuth 代理服務，用於 GitHub 登入
 
-# 新增 site_url 來告訴 CMS 你的網站完整 URL，這對 OAuth 回調很重要
-site_url: https://LKH098.github.io/my-travel-photos-site # <-- 新增此行，替換為你的 GitHub Pages 網站完整 URL
+  # auth_proxy 指向你在 Netlify 上部署 admin/ 資料夾時，Netlify Identity 的認證端點。
+  auth_proxy: https://chic-entremet-3384bb.netlify.app/.netlify/identity # <-- 這裡已經設定為你的 Netlify 網址！
+
+# site_url 告訴 Decap CMS 你的主網站（在 GitHub Pages 上）的完整 URL。
+# 這是為了確保 OAuth 流程完成後能正確重定向回你的主要網站。
+site_url: https://LKH098.github.io/my-travel-photos-site # <-- 這是你的 GitHub Pages 網站完整 URL
 
 # media_folder 定義 CMS 上傳圖片的資料夾路徑 (相對倉庫根目錄)
-media_folder: "images" 
+media_folder: "images"
 # public_folder 定義圖片在網站上公開的資料夾路徑 (相對網站根目錄)
-public_folder: "images" 
+public_folder: "images"
 
 # collections 定義你要管理哪些內容，這裡我們管理 data.json
 collections:
