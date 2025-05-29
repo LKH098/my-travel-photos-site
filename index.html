@@ -21,6 +21,7 @@
             position: relative;
             overflow: hidden; /* 確保內容不會溢出 */
             aspect-ratio: 1 / 1; /* 保持圖片容器為正方形，避免圖片拉伸變形 */
+            cursor: pointer; /* 點擊圖片時顯示手型游標 */
         }
         .image-container img {
             width: 100%;
@@ -32,18 +33,23 @@
         .image-container:hover img {
             transform: scale(1.05); /* 圖片輕微放大 */
         }
-        /* 浮層 (地點名稱) 樣式 */
+        /* 浮層 (地點名稱和描述) 樣式 */
         .overlay {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
             background-color: rgba(0, 0, 0, 0.7); /* 半透明黑色背景 */
+            color: #fff;
             padding: 10px;
             text-align: center;
             opacity: 0; /* 初始時隱藏 */
             transition: opacity 0.3s ease; /* 為透明度變化添加平滑過渡 */
             pointer-events: none; /* 讓滑鼠事件能穿透到下方的圖片 */
+            display: flex; /* 使用 Flexbox 讓內容垂直置中 */
+            flex-direction: column; /* 垂直排列 */
+            justify-content: center; /* 垂直置中 */
+            align-items: center; /* 水平置中 */
         }
         /* 當圖片容器 hover 時，顯示浮層 */
         .image-container:hover .overlay {
@@ -52,12 +58,109 @@
         }
         /* 浮層內的連結樣式 */
         .overlay a {
-            color: #fff; /* 連結文字為白色 */
-            text-decoration: none; /* 去除下劃線 */
+            color: #fff;
+            text-decoration: none;
             font-weight: bold;
+            margin-top: 5px; /* 為 Google Map 連結添加間距 */
         }
         .overlay a:hover {
-            text-decoration: underline; /* hover 時顯示下劃線 */
+            text-decoration: underline;
+        }
+        /* 浮層內的描述文字樣式 */
+        .overlay .description {
+            font-size: 0.9em;
+            color: #ccc;
+            margin-bottom: 5px; /* 描述和地點名稱之間的間距 */
+        }
+
+        /* 模態視窗 (Modal) 樣式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); /* 半透明黑色背景 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* 確保在最上層 */
+            visibility: hidden; /* 預設隱藏 */
+            opacity: 0;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-overlay.active {
+            visibility: visible; /* 顯示模態視窗 */
+            opacity: 1;
+        }
+        .modal-content {
+            background-color: #1a1a1a; /* 模態視窗內容背景色 */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            max-width: 90%; /* 最大寬度 */
+            max-height: 90%; /* 最大高度 */
+            overflow: hidden; /* 防止內容溢出 */
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .modal-image-wrapper {
+            width: 100%;
+            height: 80%; /* 圖片佔內容區 80% 高度 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* 確保圖片不溢出 */
+            margin-bottom: 15px; /* 圖片和描述之間的間距 */
+        }
+        .modal-image {
+            max-width: 100%; /* 圖片最大寬度 */
+            max-height: 100%; /* 圖片最大高度 */
+            object-fit: contain; /* 圖片保持比例，完整顯示在內容區 */
+            display: block;
+        }
+        .modal-description {
+            color: #fff;
+            text-align: center;
+            font-size: 1.1em;
+            flex-grow: 1; /* 描述區塊佔據剩餘空間 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .modal-description .location-text {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+        .modal-description .desc-text {
+            color: #ccc;
+            font-size: 0.9em;
+        }
+        .modal-description a {
+            color: #87ceeb; /* 地圖連結顏色 */
+            text-decoration: underline;
+        }
+        .modal-description a:hover {
+            text-decoration: none;
+        }
+
+        /* 關閉按鈕 */
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: #fff;
+            font-size: 2.2em;
+            cursor: pointer;
+            z-index: 1001; /* 確保在模態視窗內容上方 */
+            font-weight: bold;
+            line-height: 1; /* 調整行高讓X居中 */
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+        .close-button:hover {
+            color: #ccc;
         }
     </style>
 </head>
@@ -67,62 +170,99 @@
     </header>
 
     <main class="container mx-auto px-4 py-8">
-        <div id="image-grid" class="grid gap-4 md:grid-cols-3 grid-cols-1">
-            </div>
-
-        <div id="pagination" class="flex justify-center mt-8">
-            </div>
+        <div id="image-grid" class="grid gap-4 md:grid-cols-3 grid-cols-1"></div>
+        <div id="pagination" class="flex justify-center mt-8"></div>
     </main>
 
-    <script>
-        // --- 設定你的 GitHub 倉庫資訊 ---
-        // 請確保這裡填寫的是正確的 GitHub 使用者名稱和倉庫名稱
-        const owner = 'lkh098';             // 替換為你的 GitHub 使用者名稱
-        const repo = 'my-travel-photos-site'; // 替換為你的 GitHub 倉庫名稱
-        const imageFolderPath = 'images';   // 圖片在倉庫中的路徑，例如 'images'
+    <div id="image-modal-overlay" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-button">&times;</span> <div class="modal-image-wrapper">
+                <img id="modal-image" class="modal-image" src="" alt="">
+            </div>
+            <div id="modal-description" class="modal-description">
+                </div>
+        </div>
+    </div>
 
+    <script>
         const imagesPerPage = 9; // 每頁顯示 9 張圖片
         let currentPage = 1;     // 當前頁碼，初始為第一頁
-        let allImageData = [];   // 用於儲存從 GitHub API 獲取的所有圖片資料
+        let allImageData = [];   // 用於儲存從 JSON 檔案獲取的所有圖片資料
 
         const imageGrid = document.getElementById('image-grid');
         const paginationDiv = document.getElementById('pagination');
 
-        /**
-         * 從 GitHub API 獲取圖片檔案列表
-         */
-        async function fetchImagesFromGitHub() {
-            // 這個 URL 用於向 GitHub API 請求指定倉庫資料夾的內容
-            // *** 這是關鍵：確保這行是正確的，沒有多餘的 <span> 標籤或 \ 符號 ***
-            const url = `https://api.github.com/repos/${owner}/${repo}/contents/${imageFolderPath}`;
+        // 模態視窗相關元素
+        const imageModalOverlay = document.getElementById('image-modal-overlay');
+        const modalImage = document.getElementById('modal-image');
+        const modalDescriptionDiv = document.getElementById('modal-description');
+        const closeButton = imageModalOverlay.querySelector('.close-button');
+
+        // --- 模態視窗控制函數 ---
+        function openModal(image) {
+            modalImage.src = image.src;
+            modalImage.alt = image.alt;
+
+            modalDescriptionDiv.innerHTML = ''; // 清空描述區塊
+
+            const locationSpan = document.createElement('span');
+            locationSpan.classList.add('location-text');
+
+            // 檢查 mapLink 是否為有效連結
+            const isMapLinkValid = image.mapLink && image.mapLink.trim() !== '' && image.mapLink.trim().toLowerCase() !== '請貼上 google 地圖連結' && image.mapLink.trim().toLowerCase() !== '#';
+
+            if (isMapLinkValid) {
+                const mapLinkAnchor = document.createElement('a');
+                mapLinkAnchor.href = image.mapLink;
+                mapLinkAnchor.textContent = image.location;
+                mapLinkAnchor.target = '_blank';
+                mapLinkAnchor.rel = 'noopener noreferrer';
+                locationSpan.appendChild(mapLinkAnchor);
+            } else {
+                locationSpan.textContent = image.location;
+            }
+
+            const descriptionSpan = document.createElement('span');
+            descriptionSpan.classList.add('desc-text');
+            descriptionSpan.textContent = image.description;
+
+            modalDescriptionDiv.appendChild(locationSpan);
+            modalDescriptionDiv.appendChild(descriptionSpan);
+
+            imageModalOverlay.classList.add('active'); // 顯示模態視窗
+            document.body.style.overflow = 'hidden'; // 禁止背景捲動
+        }
+
+        function closeModal() {
+            imageModalOverlay.classList.remove('active'); // 隱藏模態視窗
+            document.body.style.overflow = ''; // 恢復背景捲動
+            modalImage.src = ''; // 清空圖片來源，避免下次顯示快取
+        }
+
+        // 關閉模態視窗的事件監聽器
+        closeButton.addEventListener('click', closeModal);
+        imageModalOverlay.addEventListener('click', (event) => {
+            // 如果點擊的是背景（而不是模態視窗內容本身），則關閉
+            if (event.target === imageModalOverlay) {
+                closeModal();
+            }
+        });
+
+        // --- 數據加載和圖片顯示邏輯 ---
+        async function fetchData() {
             try {
-                const response = await fetch(url);
+                const response = await fetch('data.json'); // 請求 data.json 檔案
                 if (!response.ok) {
-                    // 如果請求不成功 (例如 403 Forbidden, 404 Not Found)，拋出錯誤
-                    // *** 確保這行是正確的，沒有多餘的 <span> 標籤或 \ 符號 ***
-                    throw new Error(`GitHub API 錯誤: ${response.statusText} (${response.status})`);
+                    throw new Error(`無法載入資料: ${response.statusText} (${response.status})`);
                 }
-                const data = await response.json();
+                allImageData = await response.json(); // 將回應解析為 JSON 陣列
 
-                // 過濾出圖片檔案 (確保是文件類型且副檔名是圖片)，並建立圖片資料物件
-                allImageData = data
-                    .filter(item => item.type === 'file' && /\.(png|jpg|jpeg|gif|webp|avif)$/i.test(item.name))
-                    .sort((a, b) => a.name.localeCompare(b.name)) // 按檔名字母順序排序
-                    .map(item => ({
-                        src: item.download_url, // GitHub 提供直接下載的 URL
-                        alt: item.name,        // 圖片替代文字，預設為檔名
-                        location: item.name.split('.')[0].replace(/[-_]/g, ' '), // 地點名稱，預設為檔名（去除副檔名和連字號/底線）
-                        link: '#'              // 預設連結，如果需要，可以手動修改或從其他資料源獲取
-                    }));
-
-                // 成功獲取圖片資料後，顯示第一頁圖片並渲染分頁按鈕
                 displayImages(currentPage);
                 renderPagination();
 
             } catch (error) {
-                console.error("獲取圖片失敗:", error);
-                // 向用戶顯示錯誤訊息，幫助他們診斷問題
-                imageGrid.innerHTML = `<p class="text-red-500 text-center">無法載入圖片。錯誤訊息: ${error.message}。請檢查 GitHub 倉庫設定、權限或網路連線。</p>`;
+                console.error("獲取資料失敗:", error);
+                imageGrid.innerHTML = `<p class="text-red-500 text-center">無法載入圖片資料。錯誤訊息: ${error.message}</p>`;
             }
         }
 
@@ -136,31 +276,53 @@
             const endIndex = startIndex + imagesPerPage;   // 計算結束圖片索引
             const currentImages = allImageData.slice(startIndex, endIndex); // 從總圖片資料中截取當前頁的圖片
 
-            currentImages.forEach(image => {
+            currentImages.forEach((image, index) => { // 這裡我們需要索引來從 allImageData 獲取完整數據
                 const imageContainer = document.createElement('div');
-                // 為圖片容器添加 Tailwind CSS 類別和自訂樣式
                 imageContainer.classList.add(
                     'image-container', 'relative', 'overflow-hidden', 'rounded-md', 'shadow-lg', 'bg-gray-800'
                 );
 
                 const img = document.createElement('img');
-                img.src = image.src; // 圖片來源路徑
-                img.alt = image.alt; // 圖片替代文字
-                img.classList.add('w-full', 'h-auto', 'block'); // 確保圖片填滿容器並保持其區塊特性
+                img.src = image.src;
+                img.alt = image.alt;
+                img.classList.add('w-full', 'h-full', 'object-cover', 'block');
+
+                // 添加點擊事件監聽器來打開模態視窗
+                // 使用閉包來確保每個監聽器都有正確的圖片數據
+                const globalImageIndex = startIndex + index; // 計算這張圖片在 allImageData 中的全局索引
+                imageContainer.addEventListener('click', () => {
+                    openModal(allImageData[globalImageIndex]);
+                });
+
 
                 const overlay = document.createElement('div');
-                overlay.classList.add('overlay'); // 浮層樣式
+                overlay.classList.add('overlay');
 
-                const link = document.createElement('a');
-                link.href = image.link;       // 超連結
-                link.textContent = image.location; // 顯示地點名稱
-                link.target = '_blank';      // 在新分頁打開連結
-                link.rel = 'noopener noreferrer'; // 安全性考量，搭配 target="_blank" 使用
-                overlay.appendChild(link);
+                // 在縮圖浮層上只顯示地點名稱，不顯示描述和地圖連結
+                const locationOverlaySpan = document.createElement('span');
+                locationOverlaySpan.classList.add('location-text');
+                locationOverlaySpan.textContent = image.location; // 縮圖浮層只顯示地點文字
+                overlay.appendChild(locationOverlaySpan);
+
+                // 如果需要在縮圖浮層也顯示地圖連結，可以修改這裡的邏輯
+                // const isMapLinkValidOverlay = image.mapLink && image.mapLink.trim() !== '' && image.mapLink.trim().toLowerCase() !== '請貼上 google 地圖連結' && image.mapLink.trim().toLowerCase() !== '#';
+                // if (isMapLinkValidOverlay) {
+                //     const mapLinkAnchorOverlay = document.createElement('a');
+                //     mapLinkAnchorOverlay.href = image.mapLink;
+                //     mapLinkAnchorOverlay.textContent = image.location;
+                //     mapLinkAnchorOverlay.target = '_blank';
+                //     mapLinkAnchorOverlay.rel = 'noopener noreferrer';
+                //     overlay.appendChild(mapLinkAnchorOverlay);
+                // } else {
+                //     const locationTextOverlay = document.createElement('span');
+                //     locationTextOverlay.textContent = image.location;
+                //     overlay.appendChild(locationTextOverlay);
+                // }
+
 
                 imageContainer.appendChild(img);
                 imageContainer.appendChild(overlay);
-                imageGrid.appendChild(imageContainer); // 將圖片容器添加到網格中
+                imageGrid.appendChild(imageContainer);
             });
         }
 
@@ -168,35 +330,31 @@
          * 渲染分頁按鈕
          */
         function renderPagination() {
-            paginationDiv.innerHTML = ''; // 清空分頁按鈕容器，準備重新渲染
-            const totalPages = Math.ceil(allImageData.length / imagesPerPage); // 計算總頁數
+            paginationDiv.innerHTML = '';
+            const totalPages = Math.ceil(allImageData.length / imagesPerPage);
 
             for (let i = 1; i <= totalPages; i++) {
                 const button = document.createElement('button');
-                button.textContent = i; // 按鈕文字為頁碼
-                // 為分頁按鈕添加 Tailwind CSS 類別，設定基本樣式和過渡效果
+                button.textContent = i;
                 button.classList.add('px-4', 'py-2', 'mx-1', 'rounded', 'focus:outline-none', 'transition-colors', 'duration-200');
 
                 if (i === currentPage) {
-                    // 當前頁的按鈕樣式 (更突出)
                     button.classList.add('bg-gray-700', 'text-white', 'shadow-md');
                 } else {
-                    // 其他頁的按鈕樣式
                     button.classList.add('bg-gray-300', 'text-gray-800', 'hover:bg-gray-400');
                     button.addEventListener('click', () => {
-                        currentPage = i;           // 更新當前頁碼
-                        displayImages(currentPage); // 顯示新頁的圖片
-                        renderPagination();        // 重新渲染分頁按鈕，更新活躍狀態
-                        window.scrollTo({ top: 0, behavior: 'smooth' }); // 點擊分頁後平滑捲動到頁面頂部
+                        currentPage = i;
+                        displayImages(currentPage);
+                        renderPagination();
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
                     });
                 }
-                paginationDiv.appendChild(button); // 將按鈕添加到分頁容器中
+                paginationDiv.appendChild(button);
             }
         }
 
-        // --- 頁面載入時執行 ---
-        // 頁面載入完成後，呼叫函式從 GitHub 獲取圖片資料並初始化網站顯示
-        fetchImagesFromGitHub();
+        // 頁面載入完成後，呼叫函式從外部 JSON 檔案獲取圖片資料並初始化網站顯示
+        fetchData();
     </script>
 </body>
 </html>
