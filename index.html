@@ -6,157 +6,139 @@
     <title>Li's photo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* 網站背景設為全黑，文字為白色 */
         body {
             background-color: #000;
             color: #fff;
-            /* 未來如果要改成圖片背景，可以取消下面註解並修改路徑 */
-            /* background-image: url('images/your_background_image.jpg'); */
-            /* background-size: cover; */
-            /* background-position: center; */
-            /* background-attachment: fixed; */
         }
-        /* 圖片容器的基礎樣式，用於實現 hover 效果 */
         .image-container {
             position: relative;
-            overflow: hidden; /* 確保內容不會溢出 */
-            aspect-ratio: 1 / 1; /* 保持圖片容器為正方形，避免圖片拉伸變形 */
-            cursor: pointer; /* 點擊圖片時顯示手型游標 */
+            overflow: hidden;
+            aspect-ratio: 1 / 1;
+            cursor: pointer;
         }
         .image-container img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* 讓圖片填滿容器並保持比例 */
-            transition: transform 0.3s ease; /* 為圖片的縮放添加平滑過渡 */
+            object-fit: cover;
+            transition: transform 0.3s ease;
         }
-        /* 圖片 hover 時的縮放效果 */
         .image-container:hover img {
-            transform: scale(1.05); /* 圖片輕微放大 */
+            transform: scale(1.05);
         }
-        /* 浮層 (地點名稱和描述) 樣式 */
         .overlay {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            background-color: rgba(0, 0, 0, 0.7); /* 半透明黑色背景 */
+            background-color: rgba(0, 0, 0, 0.7);
             color: #fff;
             padding: 10px;
             text-align: center;
-            opacity: 0; /* 初始時隱藏 */
-            transition: opacity 0.3s ease; /* 為透明度變化添加平滑過渡 */
-            pointer-events: none; /* 讓滑鼠事件能穿透到下方的圖片 */
-            display: flex; /* 使用 Flexbox 讓內容垂直置中 */
-            flex-direction: column; /* 垂直排列 */
-            justify-content: center; /* 垂直置中 */
-            align-items: center; /* 水平置中 */
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
-        /* 當圖片容器 hover 時，顯示浮層 */
         .image-container:hover .overlay {
             opacity: 1;
-            pointer-events: auto; /* 顯示時允許滑鼠事件 */
+            pointer-events: auto;
         }
-        /* 浮層內的文字和連結樣式 */
         .overlay a {
             color: #fff;
             text-decoration: none;
             font-weight: bold;
-            margin-top: 5px; /* 為 Google Map 連結添加間距 */
+            margin-top: 5px;
         }
         .overlay a:hover {
             text-decoration: underline;
         }
-        /* 浮層內的描述文字樣式 */
         .overlay .description {
             font-size: 0.9em;
             color: #ccc;
-            margin-bottom: 5px; /* 描述和地點名稱之間的間距 */
+            margin-bottom: 5px;
         }
-
-        /* 模態視窗 (Modal) 樣式 */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8); /* 半透明黑色背景 */
+            background-color: rgba(0, 0, 0, 0.8);
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1000; /* 確保在最上層 */
-            visibility: hidden; /* 預設隱藏 */
+            z-index: 1000;
+            visibility: hidden;
             opacity: 0;
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
         .modal-overlay.active {
-            visibility: visible; /* 顯示模態視窗 */
+            visibility: visible;
             opacity: 1;
         }
         .modal-content {
-            background-color: #1a1a1a; /* 模態視窗內容背景色 */
+            background-color: #1a1a1a;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            max-width: 90%; /* 最大寬度 */
-            max-height: 90%; /* 最大高度 */
-            overflow: hidden; /* 防止內容溢出 */
+            max-width: 90%;
+            max-height: 90%;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             position: relative;
         }
         .modal-image-wrapper {
             width: 100%;
-            height: 80%; /* 圖片佔內容區 80% 高度 */
+            height: 80%;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* 確保圖片不溢出 */
-            margin-bottom: 15px; /* 圖片和描述之間的間距 */
+            overflow: hidden;
+            margin-bottom: 15px;
         }
         .modal-image {
-            max-width: 100%; /* 圖片最大寬度 */
-            max-height: 100%; /* 圖片最大高度 */
-            object-fit: contain; /* 圖片保持比例，完整顯示在內容區 */
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
             display: block;
         }
-        .modal-description-area { /* 描述區塊的整體容器 */
+        .modal-description-area {
             color: #fff;
             text-align: center;
             font-size: 1.1em;
-            flex-grow: 1; /* 描述區塊佔據剩餘空間 */
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center; /* 水平置中 */
+            align-items: center;
         }
-        .modal-description-line { /* 每一行描述或名稱 */
+        .modal-description-line {
             display: flex;
             align-items: center;
-            justify-content: center; /* 水平置中 */
+            justify-content: center;
             margin-bottom: 5px;
         }
         .modal-description-line:last-child {
             margin-bottom: 0;
         }
-        .modal-description-line span {
-            margin: 0 5px; /* 圖標與文字間距 */
-        }
         .edit-icon, .map-icon {
             cursor: pointer;
             font-size: 1.2em;
             margin: 0 5px;
-            color: #87ceeb; /* 圖標顏色 */
+            color: #87ceeb;
             transition: color 0.2s ease;
         }
         .edit-icon:hover, .map-icon:hover {
             color: #fff;
         }
-        .map-icon.disabled { /* 沒有連結時的標誌 */
+        .map-icon.disabled {
             color: #666;
             cursor: default;
         }
-
         .modal-description-line input {
             background-color: #333;
             color: #fff;
@@ -164,13 +146,11 @@
             border-radius: 4px;
             padding: 5px 10px;
             margin: 0 5px;
-            width: auto; /* 自動寬度 */
+            width: auto;
             min-width: 100px;
-            max-width: 80%; /* 最大寬度 */
+            max-width: 80%;
             box-sizing: border-box;
         }
-
-        /* 關閉按鈕 */
         .close-button {
             position: absolute;
             top: 10px;
@@ -178,18 +158,16 @@
             color: #fff;
             font-size: 2.2em;
             cursor: pointer;
-            z-index: 1001; /* 確保在模態視窗內容上方 */
+            z-index: 1001;
             font-weight: bold;
-            line-height: 1; /* 調整行高讓X居中 */
+            line-height: 1;
             text-shadow: 0 0 5px rgba(0,0,0,0.5);
         }
         .close-button:hover {
             color: #ccc;
         }
-
-        /* 保存按鈕 */
         .save-button {
-            background-color: #4CAF50; /* Green */
+            background-color: #4CAF50;
             color: white;
             padding: 8px 15px;
             border: none;
@@ -202,8 +180,6 @@
         .save-button:hover {
             background-color: #45a049;
         }
-
-        /* 分頁按鈕樣式 */
         .pagination-button {
             padding: 8px 12px;
             margin: 0 4px;
@@ -218,7 +194,7 @@
             background-color: #555;
         }
         .pagination-button.active {
-            background-color: #007bff; /* 活躍頁碼顏色 */
+            background-color: #007bff;
             font-weight: bold;
         }
         .pagination-button.disabled {
@@ -240,7 +216,8 @@
 
     <div id="image-modal-overlay" class="modal-overlay">
         <div class="modal-content">
-            <span class="close-button">×</span> <div class="modal-image-wrapper">
+            <span class="close-button">×</span>
+            <div class="modal-image-wrapper">
                 <img id="modal-image" class="modal-image" src="" alt="">
             </div>
             <div id="modal-description-area" class="modal-description-area">
@@ -259,15 +236,14 @@
     </div>
 
     <script>
-        const imagesPerPage = 9; // 每頁顯示 9 張圖片
-        const maxPageButtons = 10; // 分頁按鈕最多顯示 10 個
-        let currentPage = 1;       // 當前頁碼，初始為第一頁
-        let allImageData = [];     // 用於儲存從 JSON 檔案獲取的所有圖片資料
+        const imagesPerPage = 9;
+        const maxPageButtons = 10;
+        let currentPage = 1;
+        let allImageData = [];
 
         const imageGrid = document.getElementById('image-grid');
         const paginationDiv = document.getElementById('pagination');
 
-        // 模態視窗相關元素
         const imageModalOverlay = document.getElementById('image-modal-overlay');
         const modalImage = document.getElementById('modal-image');
         const modalDescriptionArea = document.getElementById('modal-description-area');
@@ -277,23 +253,20 @@
         const closeButton = imageModalOverlay.querySelector('.close-button');
         const saveJsonButton = document.getElementById('save-json-button');
 
-        let currentEditingItemIndex = -1; // 記錄當前在模態視窗中編輯的圖片在 allImageData 中的索引
+        let currentEditingItemIndex = -1;
 
-        // --- 模態視窗控制函數 ---
-        function openModal(imageIndex) { // 接收圖片在 allImageData 中的索引
+        function openModal(imageIndex) {
             const image = allImageData[imageIndex];
-            if (!image) return; // 防止無效索引
+            if (!image) return;
 
-            currentEditingItemIndex = imageIndex; // 更新當前編輯索引
+            currentEditingItemIndex = imageIndex;
 
             modalImage.src = image.src;
             modalImage.alt = image.alt;
 
-            // 顯示名稱和描述
             modalLocationText.textContent = image.location;
             modalDescriptionText.textContent = image.description;
 
-            // 處理地圖標誌的顯示和點擊
             const isMapLinkValid = image.mapLink && image.mapLink.trim() !== '' && image.mapLink.trim().toLowerCase() !== '請貼上 google 地圖連結' && image.mapLink.trim().toLowerCase() !== '#';
             if (isMapLinkValid) {
                 modalMapIcon.classList.remove('disabled');
@@ -302,23 +275,21 @@
             } else {
                 modalMapIcon.classList.add('disabled');
                 modalMapIcon.style.cursor = 'default';
-                modalMapIcon.onclick = null; // 移除點擊事件，避免重複觸發
+                modalMapIcon.onclick = null;
             }
 
-            // 激活編輯模式
             setupEditIcons();
 
-            imageModalOverlay.classList.add('active'); // 顯示模態視窗
-            document.body.style.overflow = 'hidden'; // 禁止背景捲動
+            imageModalOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
         function closeModal() {
-            imageModalOverlay.classList.remove('active'); // 隱藏模態視窗
-            document.body.style.overflow = ''; // 恢復背景捲動
-            modalImage.src = ''; // 清空圖片來源，避免下次顯示快取
-            currentEditingItemIndex = -1; // 重置編輯索引
-            saveJsonButton.classList.add('hidden'); // 隱藏保存按鈕
-            // 確保所有輸入框都變回文本
+            imageModalOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+            modalImage.src = '';
+            currentEditingItemIndex = -1;
+            saveJsonButton.classList.add('hidden');
             document.querySelectorAll('.modal-description-line span.edit-icon').forEach(icon => {
                 const field = icon.dataset.field;
                 const textSpan = document.getElementById(`modal-${field}-text`);
@@ -326,99 +297,91 @@
                     textSpan.textContent = allImageData[currentEditingItemIndex !== -1 ? currentEditingItemIndex : 0][field];
                 }
             });
-             // 確保地圖連結輸入框變回文字
             if (modalMapIcon.previousElementSibling && modalMapIcon.previousElementSibling.tagName === 'INPUT') {
                 modalMapIcon.previousElementSibling.remove();
-                modalMapIcon.style.display = 'inline-block'; // 重新顯示地圖圖標
-                modalLocationText.style.display = 'inline-block'; // 重新顯示地點名稱
+                modalMapIcon.style.display = 'inline-block';
+                modalLocationText.style.display = 'inline-block';
             }
         }
 
-        // 關閉模態視窗的事件監聽器
         closeButton.addEventListener('click', closeModal);
         imageModalOverlay.addEventListener('click', (event) => {
-            // 如果點擊的是背景（而不是模態視窗內容本身），則關閉
             if (event.target === imageModalOverlay) {
                 closeModal();
             }
         });
 
-        // --- 編輯功能邏輯 ---
         function setupEditIcons() {
             document.querySelectorAll('.edit-icon').forEach(icon => {
-                const field = icon.dataset.field; // 'location' or 'description'
+                const field = icon.dataset.field;
                 const textSpan = document.getElementById(`modal-${field}-text`);
 
                 icon.onclick = () => {
-                    if (currentEditingItemIndex === -1) return; // 沒選中圖片則不操作
+                    if (currentEditingItemIndex === -1) return;
 
-                    // 判斷是否已經是輸入框模式
                     if (textSpan.querySelector('input')) {
-                        return; // 已經是輸入框了，不重複操作
+                        return;
                     }
 
                     const input = document.createElement('input');
                     input.type = 'text';
                     input.value = allImageData[currentEditingItemIndex][field];
-                    input.style.width = '100%'; // 讓輸入框佔滿
-                    input.style.textAlign = 'center'; // 文字置中
+                    input.style.width = '100%';
+                    input.style.textAlign = 'center';
 
-                    textSpan.innerHTML = ''; // 清空原始文字
+                    textSpan.innerHTML = '';
                     textSpan.appendChild(input);
-                    input.focus(); // 自動聚焦
+                    input.focus();
 
                     input.addEventListener('keypress', (e) => {
                         if (e.key === 'Enter') {
                             updateAndSaveField(field, input.value);
-                            textSpan.textContent = input.value; // 更新顯示為新值
+                            textSpan.textContent = input.value;
                         }
                     });
-                    input.addEventListener('blur', () => { // 失去焦點時保存
+                    input.addEventListener('blur', () => {
                         updateAndSaveField(field, input.value);
-                        textSpan.textContent = input.value; // 更新顯示為新值
+                        textSpan.textContent = input.value;
                     });
                 };
             });
 
-            // 地圖圖標的編輯邏輯
             modalMapIcon.onclick = (e) => {
-                e.stopPropagation(); // 阻止事件冒泡到模態背景
+                e.stopPropagation();
                 if (currentEditingItemIndex === -1) return;
 
                 const currentMapLink = allImageData[currentEditingItemIndex].mapLink;
 
-                // 判斷是否已經是輸入框模式
                 if (modalLocationText.querySelector('input') || modalMapIcon.previousElementSibling && modalMapIcon.previousElementSibling.tagName === 'INPUT') {
-                    return; // 已經是輸入框了，不重複操作
+                    return;
                 }
 
                 const input = document.createElement('input');
                 input.type = 'text';
-                input.value = currentMapLink.startsWith('http') ? currentMapLink : ''; // 如果是佔位符，清空輸入框
+                input.value = currentMapLink.startsWith('http') ? currentMapLink : '';
                 input.placeholder = "請貼上 Google 地圖連結";
                 input.style.width = '100%';
                 input.style.textAlign = 'center';
 
-                // 替換地點名稱和地圖圖標
-                modalLocationText.style.display = 'none'; // 隱藏地點名稱
-                modalMapIcon.style.display = 'none'; // 隱藏地圖圖標
+                modalLocationText.style.display = 'none';
+                modalMapIcon.style.display = 'none';
 
-                modalMapIcon.parentNode.insertBefore(input, modalMapIcon); // 在地圖圖標前面插入輸入框
+                modalMapIcon.parentNode.insertBefore(input, modalMapIcon);
                 input.focus();
 
                 input.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') {
                         updateAndSaveField('mapLink', input.value);
-                        input.remove(); // 移除輸入框
-                        modalLocationText.style.display = 'inline-block'; // 重新顯示地點名稱
-                        modalMapIcon.style.display = 'inline-block'; // 重新顯示地圖圖標
+                        input.remove();
+                        modalLocationText.style.display = 'inline-block';
+                        modalMapIcon.style.display = 'inline-block';
                     }
                 });
-                input.addEventListener('blur', () => { // 失去焦點時保存
+                input.addEventListener('blur', () => {
                     updateAndSaveField('mapLink', input.value);
-                    input.remove(); // 移除輸入框
-                    modalLocationText.style.display = 'inline-block'; // 重新顯示地點名稱
-                    modalMapIcon.style.display = 'inline-block'; // 重新顯示地圖圖標
+                    input.remove();
+                    modalLocationText.style.display = 'inline-block';
+                    modalMapIcon.style.display = 'inline-block';
                 });
             };
         }
@@ -426,42 +389,46 @@
         function updateAndSaveField(field, value) {
             if (currentEditingItemIndex === -1) return;
 
-            // 更新 allImageData 陣列中的數據
             allImageData[currentEditingItemIndex][field] = value;
             console.log(`更新了 ${field}:`, value);
-            saveJsonButton.classList.remove('hidden'); // 顯示保存按鈕
+            saveJsonButton.classList.remove('hidden');
         }
 
         saveJsonButton.addEventListener('click', () => {
-            // 將 allImageData 轉換為 JSON 字串
-            const jsonString = JSON.stringify(allImageData, null, 2); // null, 2 用於美化 JSON 格式
+            const jsonString = JSON.stringify(allImageData, null, 2);
 
-            // 創建一個 Blob 物件
             const blob = new Blob([jsonString], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
 
-            // 創建一個下載連結
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'data.json'; // 預設下載檔名
+            a.download = 'data.json';
             document.body.appendChild(a);
-            a.click(); // 觸發下載
+            a.click();
             document.body.removeChild(a);
-            URL.revokeObjectURL(url); // 釋放 URL 物件
+            URL.revokeObjectURL(url);
 
             alert('data.json 已下載到您的電腦。\n請將它替換您本地專案資料夾中的 data.json，然後再推送到 GitHub。');
-            saveJsonButton.classList.add('hidden'); // 下載後隱藏按鈕
+            saveJsonButton.classList.add('hidden');
         });
 
 
-        // --- 數據加載和圖片顯示邏輯 ---
         async function fetchData() {
             try {
-                const response = await fetch('data.json'); // 請求 data.json 檔案
+                const response = await fetch('data.json');
                 if (!response.ok) {
-                    throw new Error(`無法載入資料: ${response.statusText} (${response.status})`);
+                    throw new Error(`無法載入資料: <span class="math-inline">\{response\.statusText\} \(</span>{response.status})`);
                 }
-                allImageData = await response.json(); // 將回應解析為 JSON 陣列
+                allImageData = await response.json();
+
+                // Ensure allImageData is an array of items (for Decap CMS compatibility)
+                if (allImageData && typeof allImageData === 'object' && 'items' in allImageData && Array.isArray(allImageData.items)) {
+                    allImageData = allImageData.items;
+                } else if (!Array.isArray(allImageData)) {
+                    console.warn("data.json 格式不符預期，應為陣列或包含 'items' 鍵的物件。");
+                    allImageData = []; // 重置為空陣列以避免錯誤
+                }
+
 
                 displayImages(currentPage);
                 renderPagination();
@@ -472,15 +439,11 @@
             }
         }
 
-        /**
-         * 根據頁碼顯示對應的圖片
-         * @param {number} page - 要顯示的頁碼
-         */
         function displayImages(page) {
-            imageGrid.innerHTML = ''; // 清空圖片網格，準備載入新圖片
-            const startIndex = (page - 1) * imagesPerPage; // 計算起始圖片索引
-            const endIndex = startIndex + imagesPerPage;   // 計算結束圖片索引
-            const currentImages = allImageData.slice(startIndex, endIndex); // 從總圖片資料中截取當前頁的圖片
+            imageGrid.innerHTML = '';
+            const startIndex = (page - 1) * imagesPerPage;
+            const endIndex = startIndex + imagesPerPage;
+            const currentImages = allImageData.slice(startIndex, endIndex);
 
             currentImages.forEach((image, index) => {
                 const imageContainer = document.createElement('div');
@@ -493,8 +456,7 @@
                 img.alt = image.alt;
                 img.classList.add('w-full', 'h-full', 'object-cover', 'block');
 
-                // 添加點擊事件監聽器來打開模態視窗
-                const globalImageIndex = startIndex + index; // 計算這張圖片在 allImageData 中的全局索引
+                const globalImageIndex = startIndex + index;
                 imageContainer.addEventListener('click', () => {
                     openModal(globalImageIndex);
                 });
@@ -502,7 +464,6 @@
                 const overlay = document.createElement('div');
                 overlay.classList.add('overlay');
 
-                // 在縮圖浮層上只顯示地點名稱
                 const locationOverlaySpan = document.createElement('span');
                 locationOverlaySpan.classList.add('location-text');
                 locationOverlaySpan.textContent = image.location;
@@ -514,23 +475,17 @@
             });
         }
 
-        /**
-         * 渲染分頁按鈕
-         */
         function renderPagination() {
             paginationDiv.innerHTML = '';
             const totalPages = Math.ceil(allImageData.length / imagesPerPage);
 
-            // 計算分頁按鈕的起始和結束頁碼
             let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
             let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
 
-            // 調整起始頁碼，確保總是顯示 maxPageButtons 個按鈕 (如果總頁數足夠)
             if (endPage - startPage + 1 < maxPageButtons) {
                 startPage = Math.max(1, endPage - maxPageButtons + 1);
             }
 
-            // 1. 首頁按鈕
             if (startPage > 1) {
                 const firstPageButton = document.createElement('button');
                 firstPageButton.textContent = '« 首頁';
@@ -544,7 +499,6 @@
                 paginationDiv.appendChild(firstPageButton);
             }
 
-            // 2. 數字頁碼按鈕
             for (let i = startPage; i <= endPage; i++) {
                 const button = document.createElement('button');
                 button.textContent = i;
@@ -562,7 +516,6 @@
                 paginationDiv.appendChild(button);
             }
 
-            // 3. 最終頁按鈕
             if (endPage < totalPages) {
                 const lastPageButton = document.createElement('button');
                 lastPageButton.textContent = '最終頁 »';
@@ -577,7 +530,6 @@
             }
         }
 
-        // 頁面載入完成後，呼叫函式從外部 JSON 檔案獲取圖片資料並初始化網站顯示
         fetchData();
     </script>
 </body>
