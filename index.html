@@ -22,17 +22,38 @@
             overflow: hidden; /* 確保內容不會溢出 */
             aspect-ratio: 1 / 1; /* 保持圖片容器為正方形，避免圖片拉伸變形 */
             cursor: pointer; /* 點擊圖片時顯示手型游標 */
+            background-color: #333; /* 圖片載入時的背景色 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .image-container img {
             width: 100%;
             height: 100%;
             object-fit: cover; /* 讓圖片填滿容器並保持比例 */
             transition: transform 0.3s ease; /* 為圖片的縮放添加平滑過渡 */
+            display: none; /* 預設隱藏圖片，直到載入完成 */
         }
-        /* 圖片 hover 時的縮放效果 */
-        .image-container:hover img {
-            transform: scale(1.05); /* 圖片輕微放大 */
+        .image-container.loaded img {
+            display: block; /* 載入完成後顯示圖片 */
         }
+        /* 圖片載入動畫（骨架屏效果） */
+        .image-loader {
+            width: 40px; /* 載入動畫大小 */
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        .image-container.loaded .image-loader {
+            display: none; /* 圖片載入完成後隱藏動畫 */
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         /* 浮層 (地點名稱和描述) 樣式 */
         .overlay {
             position: absolute;
@@ -61,7 +82,7 @@
             color: #fff;
             text-decoration: none;
             font-weight: bold;
-            margin-top: 5px; /* 為 Google Map 連結添加間距 */
+            margin-top: 5px;
         }
         .overlay a:hover {
             text-decoration: underline;
@@ -70,7 +91,7 @@
         .overlay .description {
             font-size: 0.9em;
             color: #ccc;
-            margin-bottom: 5px; /* 描述和地點名稱之間的間距 */
+            margin-bottom: 5px;
         }
 
         /* 模態視窗 (Modal) 樣式 */
@@ -80,95 +101,85 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8); /* 半透明黑色背景 */
+            background-color: rgba(0, 0, 0, 0.8);
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1000; /* 確保在最上層 */
-            visibility: hidden; /* 預設隱藏 */
+            z-index: 1000;
+            visibility: hidden;
             opacity: 0;
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
         .modal-overlay.active {
-            visibility: visible; /* 顯示模態視窗 */
+            visibility: visible;
             opacity: 1;
         }
         .modal-content {
-            background-color: #1a1a1a; /* 模態視窗內容背景色 */
+            background-color: #1a1a1a;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            max-width: 90%; /* 最大寬度 */
-            max-height: 90%; /* 最大高度 */
-            overflow: hidden; /* 防止內容溢出 */
+            max-width: 90%;
+            max-height: 90%;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             position: relative;
         }
         .modal-image-wrapper {
             width: 100%;
-            height: 80%; /* 圖片佔內容區 80% 高度 */
+            height: 80%;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* 確保圖片不溢出 */
-            margin-bottom: 15px; /* 圖片和描述之間的間距 */
+            overflow: hidden;
+            margin-bottom: 15px;
         }
         .modal-image {
-            max-width: 100%; /* 圖片最大寬度 */
-            max-height: 100%; /* 圖片最大高度 */
-            object-fit: contain; /* 圖片保持比例，完整顯示在內容區 */
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
             display: block;
         }
-        .modal-description-area { /* 描述區塊的整體容器 */
+        .modal-description-area {
             color: #fff;
             text-align: center;
             font-size: 1.1em;
-            flex-grow: 1; /* 描述區塊佔據剩餘空間 */
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center; /* 水平置中 */
+            align-items: center;
         }
-        .modal-description-line { /* 每一行描述或名稱 */
+        .modal-description-line {
             display: flex;
             align-items: center;
-            justify-content: center; /* 水平置中 */
+            justify-content: center;
             margin-bottom: 5px;
         }
         .modal-description-line:last-child {
             margin-bottom: 0;
         }
-        /* SVG 圖標基礎樣式 */
-        .icon-svg {
-            width: 20px; /* 圖標大小 */
-            height: 20px;
-            margin: 0 5px;
-            fill: #aaa; /* 淺灰色 */
-            cursor: pointer;
-            transition: fill 0.2s ease;
+        /* 模態視窗內的文字樣式 */
+        .modal-location-text, .modal-description-text {
+            margin: 0; /* 移除預設外邊距 */
         }
-        .icon-svg:hover {
-            fill: #fff; /* hover 時點亮為白色 */
+        .modal-location-text {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 5px;
         }
-        .map-icon-svg.disabled { /* 沒有連結時的地圖圖標 */
-            fill: #666; /* 變暗 */
-            cursor: default;
+        .modal-description-text {
+            color: #ccc;
+            font-size: 0.9em;
         }
-
-        .modal-description-line input {
-            background-color: #333;
-            color: #fff;
-            border: 1px solid #555;
-            border-radius: 4px;
-            padding: 5px 10px;
-            margin: 0 5px;
-            width: auto;
-            min-width: 100px;
-            max-width: 80%;
-            box-sizing: border-box;
+        .modal-description-line a {
+            color: #87ceeb; /* 地圖連結顏色 */
+            text-decoration: underline;
         }
-
+        .modal-description-line a:hover {
+            text-decoration: none;
+        }
         /* 關閉按鈕 */
         .close-button {
             position: absolute;
@@ -209,11 +220,29 @@
             color: #666;
             cursor: not-allowed;
         }
+
+        /* 登入按鈕 */
+        .login-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #007bff;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .login-button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body class="font-sans">
     <header class="py-6 text-center">
         <h1 class="text-3xl font-bold">Li's photo</h1>
+        <a href="https://lkh-photo-site.netlify.app/" target="_blank" class="login-button">登入</a>
     </header>
 
     <main class="container mx-auto px-4 py-8">
@@ -223,20 +252,18 @@
 
     <div id="image-modal-overlay" class="modal-overlay">
         <div class="modal-content">
-            <span class="close-button">×</span> <div class="modal-image-wrapper">
+            <span class="close-button">×</span>
+            <div class="modal-image-wrapper">
                 <img id="modal-image" class="modal-image" src="" alt="">
             </div>
             <div id="modal-description-area" class="modal-description-area">
                 <div id="location-line" class="modal-description-line">
-                    <svg class="icon-svg edit-icon" data-field="location" viewBox="0 0 24 24" fill="currentColor"><path d="M7 17.5L4 20.5V23H6.5L9.5 20L7 17.5ZM20.71 5.04C20.32 4.65 19.68 4.65 19.29 5.04L17.71 6.63L20.37 9.29L21.96 7.71C22.35 7.32 22.35 6.68 21.96 6.29L20.71 5.04ZM16.37 7.96L14.79 6.37L7 14.16V16.71H9.55L17.37 8.96L16.37 7.96Z" /></svg>
                     <span id="modal-location-text"></span>
-                    <svg class="icon-svg map-icon-svg" id="modal-map-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 11.5A2.5 2.5 0 0 1 9.5 9A2.5 2.5 0 0 1 12 6.5A2.5 2.5 0 0 1 14.5 9A2.5 2.5 0 0 1 12 11.5M12 2A7 7 0 0 0 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9A7 7 0 0 0 12 2Z" /></svg>
                 </div>
                 <div id="description-line" class="modal-description-line">
-                    <svg class="icon-svg edit-icon" data-field="description" viewBox="0 0 24 24" fill="currentColor"><path d="M7 17.5L4 20.5V23H6.5L9.5 20L7 17.5ZM20.71 5.04C20.32 4.65 19.68 4.65 19.29 5.04L17.71 6.63L20.37 9.29L21.96 7.71C22.35 7.32 22.35 6.68 21.96 6.29L20.71 5.04ZM16.37 7.96L14.79 6.37L7 14.16V16.71H9.55L17.37 8.96L16.37 7.96Z" /></svg>
                     <span id="modal-description-text"></span>
                 </div>
-                </div>
+            </div>
         </div>
     </div>
 
@@ -251,39 +278,45 @@
 
         const imageModalOverlay = document.getElementById('image-modal-overlay');
         const modalImage = document.getElementById('modal-image');
-        const modalDescriptionArea = document.getElementById('modal-description-area');
         const modalLocationText = document.getElementById('modal-location-text');
         const modalDescriptionText = document.getElementById('modal-description-text');
-        const modalMapIcon = document.getElementById('modal-map-icon');
         const closeButton = imageModalOverlay.querySelector('.close-button');
-        // const saveJsonButton = document.getElementById('save-json-button'); // 移除此變數宣告
-
-        let currentEditingItemIndex = -1;
-
+        
+        // --- 模態視窗控制函數 ---
         function openModal(imageIndex) {
             const image = allImageData[imageIndex];
             if (!image) return;
 
-            currentEditingItemIndex = imageIndex;
-
             modalImage.src = image.src;
             modalImage.alt = image.alt;
 
-            modalLocationText.textContent = image.location;
-            modalDescriptionText.textContent = image.description;
+            // 顯示地點名稱
+            modalLocationText.innerHTML = ''; // 清空確保沒有舊內容
+            const locationTextSpan = document.createElement('span');
+            locationTextSpan.textContent = image.location;
+            modalLocationText.appendChild(locationTextSpan);
 
+            // 處理地圖連結
             const isMapLinkValid = image.mapLink && image.mapLink.trim() !== '' && image.mapLink.trim().toLowerCase() !== '請貼上 google 地圖連結' && image.mapLink.trim().toLowerCase() !== '#';
             if (isMapLinkValid) {
-                modalMapIcon.classList.remove('disabled');
-                modalMapIcon.style.cursor = 'pointer';
-                modalMapIcon.onclick = () => window.open(image.mapLink, '_blank');
-            } else {
-                modalMapIcon.classList.add('disabled');
-                modalMapIcon.style.cursor = 'default';
-                modalMapIcon.onclick = null;
+                const mapLinkAnchor = document.createElement('a');
+                mapLinkAnchor.href = image.mapLink;
+                mapLinkAnchor.target = '_blank';
+                mapLinkAnchor.rel = 'noopener noreferrer';
+                
+                // 地圖釘圖標 (SVG)
+                const mapIconSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                mapIconSvg.classList.add('icon-svg');
+                mapIconSvg.setAttribute('viewBox', '0 0 24 24');
+                mapIconSvg.setAttribute('fill', 'currentColor');
+                mapIconSvg.innerHTML = '<path d="M12 11.5A2.5 2.5 0 0 1 9.5 9A2.5 2.5 0 0 1 12 6.5A2.5 2.5 0 0 1 14.5 9A2.5 2.5 0 0 1 12 11.5M12 2A7 7 0 0 0 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9A7 7 0 0 0 12 2Z" />';
+                
+                mapLinkAnchor.appendChild(mapIconSvg);
+                modalLocationText.appendChild(mapLinkAnchor); // 將圖標作為連結的一部分
             }
 
-            setupEditIcons();
+            // 顯示描述
+            modalDescriptionText.textContent = image.description;
 
             imageModalOverlay.classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -293,25 +326,6 @@
             imageModalOverlay.classList.remove('active');
             document.body.style.overflow = '';
             modalImage.src = '';
-            currentEditingItemIndex = -1;
-            // saveJsonButton.classList.add('hidden'); // 移除此行
-            document.querySelectorAll('.modal-description-line span.edit-icon').forEach(icon => {
-                const field = icon.dataset.field;
-                const textSpan = document.getElementById(`modal-${field}-text`);
-                if (textSpan.querySelector('input')) {
-                    // 恢復為原始文字，如果編輯模式還在
-                    if (allImageData[currentEditingItemIndex] && allImageData[currentEditingItemIndex][field]) {
-                        textSpan.textContent = allImageData[currentEditingItemIndex][field];
-                    } else {
-                        textSpan.textContent = ''; // 或者適當的預設值
-                    }
-                }
-            });
-            if (modalMapIcon.previousElementSibling && modalMapIcon.previousElementSibling.tagName === 'INPUT') {
-                modalMapIcon.previousElementSibling.remove();
-                modalMapIcon.style.display = 'inline-block';
-                modalLocationText.style.display = 'inline-block';
-            }
         }
 
         closeButton.addEventListener('click', closeModal);
@@ -321,108 +335,7 @@
             }
         });
 
-        function setupEditIcons() {
-            document.querySelectorAll('.edit-icon').forEach(icon => {
-                const field = icon.dataset.field;
-                const textSpan = document.getElementById(`modal-${field}-text`);
-
-                icon.onclick = () => {
-                    if (currentEditingItemIndex === -1) return;
-
-                    if (textSpan.querySelector('input')) {
-                        return;
-                    }
-
-                    const input = document.createElement('input');
-                    input.type = 'text';
-                    input.value = allImageData[currentEditingItemIndex][field];
-                    input.style.width = '100%';
-                    input.style.textAlign = 'center';
-
-                    textSpan.innerHTML = '';
-                    textSpan.appendChild(input);
-                    input.focus();
-
-                    input.addEventListener('keypress', (e) => {
-                        if (e.key === 'Enter') {
-                            updateAndSaveField(field, input.value);
-                            textSpan.textContent = input.value;
-                        }
-                    });
-                    input.addEventListener('blur', () => {
-                        updateAndSaveField(field, input.value);
-                        textSpan.textContent = input.value;
-                    });
-                };
-            });
-
-            modalMapIcon.onclick = (e) => {
-                e.stopPropagation();
-                if (currentEditingItemIndex === -1) return;
-
-                const currentMapLink = allImageData[currentEditingItemIndex].mapLink;
-
-                if (modalLocationText.querySelector('input') || modalMapIcon.previousElementSibling && modalMapIcon.previousElementSibling.tagName === 'INPUT') {
-                    return;
-                }
-
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.value = currentMapLink.startsWith('http') ? currentMapLink : '';
-                input.placeholder = "請貼上 Google 地圖連結";
-                input.style.width = '100%';
-                input.style.textAlign = 'center';
-
-                modalLocationText.style.display = 'none';
-                modalMapIcon.style.display = 'none';
-
-                modalMapIcon.parentNode.insertBefore(input, modalMapIcon);
-                input.focus();
-
-                input.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        updateAndSaveField('mapLink', input.value);
-                        input.remove();
-                        modalLocationText.style.display = 'inline-block';
-                        modalMapIcon.style.display = 'inline-block';
-                    }
-                });
-                input.addEventListener('blur', () => {
-                    updateAndSaveField('mapLink', input.value);
-                    input.remove();
-                    modalLocationText.style.display = 'inline-block';
-                    modalMapIcon.style.display = 'inline-block';
-                });
-            };
-        }
-
-        function updateAndSaveField(field, value) {
-            if (currentEditingItemIndex === -1) return;
-
-            allImageData[currentEditingItemIndex][field] = value;
-            console.log(`更新了 ${field}:`, value);
-            // saveJsonButton.classList.remove('hidden'); // 移除此行
-        }
-
-        // saveJsonButton.addEventListener('click', () => { // 移除此事件監聽器
-        //     const jsonString = JSON.stringify(allImageData, null, 2);
-
-        //     const blob = new Blob([jsonString], { type: 'application/json' });
-        //     const url = URL.createObjectURL(blob);
-
-        //     const a = document.createElement('a');
-        //     a.href = url;
-        //     a.download = 'data.json';
-        //     document.body.appendChild(a);
-        //     a.click();
-        //     document.body.removeChild(a);
-        //     URL.revokeObjectURL(url);
-
-        //     alert('data.json 已下載到您的電腦。\n請將它替換您本地專案資料夾中的 data.json，然後再推送到 GitHub。');
-        //     saveJsonButton.classList.add('hidden');
-        // });
-
-
+        // --- 數據加載和圖片顯示邏輯 ---
         async function fetchData() {
             try {
                 const response = await fetch('data.json');
@@ -431,11 +344,12 @@
                 }
                 allImageData = await response.json();
 
+                // Ensure allImageData is an array of items (for Decap CMS compatibility)
                 if (allImageData && typeof allImageData === 'object' && 'items' in allImageData && Array.isArray(allImageData.items)) {
                     allImageData = allImageData.items;
                 } else if (!Array.isArray(allImageData)) {
                     console.warn("data.json 格式不符預期，應為陣列或包含 'items' 鍵的物件。");
-                    allImageData = [];
+                    allImageData = []; // 重置為空陣列以避免錯誤
                 }
 
                 displayImages(currentPage);
@@ -447,11 +361,15 @@
             }
         }
 
+        /**
+         * 根據頁碼顯示對應的圖片
+         * @param {number} page - 要顯示的頁碼
+         */
         function displayImages(page) {
-            imageGrid.innerHTML = '';
-            const startIndex = (page - 1) * imagesPerPage;
-            const endIndex = startIndex + imagesPerPage;
-            const currentImages = allImageData.slice(startIndex, endIndex);
+            imageGrid.innerHTML = ''; // 清空圖片網格，準備載入新圖片
+            const startIndex = (page - 1) * imagesPerPage; // 計算起始圖片索引
+            const endIndex = startIndex + imagesPerPage;   // 計算結束圖片索引
+            const currentImages = allImageData.slice(startIndex, endIndex); // 從總圖片資料中截取當前頁的圖片
 
             currentImages.forEach((image, index) => {
                 const imageContainer = document.createElement('div');
@@ -463,6 +381,22 @@
                 img.src = image.src;
                 img.alt = image.alt;
                 img.classList.add('w-full', 'h-full', 'object-cover', 'block');
+                
+                // 圖片載入完成事件
+                img.onload = () => {
+                    imageContainer.classList.add('loaded'); // 添加 loaded class 以顯示圖片並隱藏載入動畫
+                };
+                img.onerror = () => {
+                    console.error('圖片載入失敗:', img.src);
+                    imageContainer.classList.add('loaded'); // 即使失敗也移除載入動畫，避免卡住
+                    // 可以添加一個錯誤圖片或提示
+                };
+
+                // 添加載入動畫骨架
+                const loader = document.createElement('div');
+                loader.classList.add('image-loader');
+                imageContainer.appendChild(loader);
+
 
                 const globalImageIndex = startIndex + index;
                 imageContainer.addEventListener('click', () => {
@@ -483,6 +417,9 @@
             });
         }
 
+        /**
+         * 渲染分頁按鈕
+         */
         function renderPagination() {
             paginationDiv.innerHTML = '';
             const totalPages = Math.ceil(allImageData.length / imagesPerPage);
