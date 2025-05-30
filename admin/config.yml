@@ -5,7 +5,7 @@ backend:
   branch: main # <-- 你的倉庫主分支名稱，通常是 main
 
   # auth_proxy 指向你在 Netlify 上部署 admin/ 資料夾時，Netlify Identity 的認證端點。
-  auth_proxy: https://chic-entremet-3384bb.netlify.app/.netlify/identity # <-- 這裡已經設定為你的 Netlify 網址！
+  auth_proxy: https://lkh-photo-site.netlify.app # <-- 這裡已經設定為你的 Netlify 網址！
 
 # site_url 告訴 Decap CMS 你的主網站（在 GitHub Pages 上）的完整 URL。
 # 這是為了確保 OAuth 流程完成後能正確重定向回你的主要網站。
