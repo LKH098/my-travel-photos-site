@@ -6,139 +6,156 @@
     <title>Li's photo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* 網站背景設為全黑，文字為白色 */
         body {
             background-color: #000;
             color: #fff;
+            /* 未來如果要改成圖片背景，可以取消下面註解並修改路徑 */
+            /* background-image: url('images/your_background_image.jpg'); */
+            /* background-size: cover; */
+            /* background-position: center; */
+            /* background-attachment: fixed; */
         }
+        /* 圖片容器的基礎樣式，用於實現 hover 效果 */
         .image-container {
             position: relative;
-            overflow: hidden;
-            aspect-ratio: 1 / 1;
-            cursor: pointer;
+            overflow: hidden; /* 確保內容不會溢出 */
+            aspect-ratio: 1 / 1; /* 保持圖片容器為正方形，避免圖片拉伸變形 */
+            cursor: pointer; /* 點擊圖片時顯示手型游標 */
         }
         .image-container img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
+            object-fit: cover; /* 讓圖片填滿容器並保持比例 */
+            transition: transform 0.3s ease; /* 為圖片的縮放添加平滑過渡 */
         }
+        /* 圖片 hover 時的縮放效果 */
         .image-container:hover img {
-            transform: scale(1.05);
+            transform: scale(1.05); /* 圖片輕微放大 */
         }
+        /* 浮層 (地點名稱和描述) 樣式 */
         .overlay {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.7); /* 半透明黑色背景 */
             color: #fff;
             padding: 10px;
             text-align: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            opacity: 0; /* 初始時隱藏 */
+            transition: opacity 0.3s ease; /* 為透明度變化添加平滑過渡 */
+            pointer-events: none; /* 讓滑鼠事件能穿透到下方的圖片 */
+            display: flex; /* 使用 Flexbox 讓內容垂直置中 */
+            flex-direction: column; /* 垂直排列 */
+            justify-content: center; /* 垂直置中 */
+            align-items: center; /* 水平置中 */
         }
+        /* 當圖片容器 hover 時，顯示浮層 */
         .image-container:hover .overlay {
             opacity: 1;
-            pointer-events: auto;
+            pointer-events: auto; /* 顯示時允許滑鼠事件 */
         }
+        /* 浮層內的文字和連結樣式 */
         .overlay a {
             color: #fff;
             text-decoration: none;
             font-weight: bold;
-            margin-top: 5px;
+            margin-top: 5px; /* 為 Google Map 連結添加間距 */
         }
         .overlay a:hover {
             text-decoration: underline;
         }
+        /* 浮層內的描述文字樣式 */
         .overlay .description {
             font-size: 0.9em;
             color: #ccc;
-            margin-bottom: 5px;
+            margin-bottom: 5px; /* 描述和地點名稱之間的間距 */
         }
+
+        /* 模態視窗 (Modal) 樣式 */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
+            background-color: rgba(0, 0, 0, 0.8); /* 半透明黑色背景 */
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
-            visibility: hidden;
+            z-index: 1000; /* 確保在最上層 */
+            visibility: hidden; /* 預設隱藏 */
             opacity: 0;
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
         .modal-overlay.active {
-            visibility: visible;
+            visibility: visible; /* 顯示模態視窗 */
             opacity: 1;
         }
         .modal-content {
-            background-color: #1a1a1a;
+            background-color: #1a1a1a; /* 模態視窗內容背景色 */
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            max-width: 90%;
-            max-height: 90%;
-            overflow: hidden;
+            max-width: 90%; /* 最大寬度 */
+            max-height: 90%; /* 最大高度 */
+            overflow: hidden; /* 防止內容溢出 */
             display: flex;
             flex-direction: column;
             position: relative;
         }
         .modal-image-wrapper {
             width: 100%;
-            height: 80%;
+            height: 80%; /* 圖片佔內容區 80% 高度 */
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
-            margin-bottom: 15px;
+            overflow: hidden; /* 確保圖片不溢出 */
+            margin-bottom: 15px; /* 圖片和描述之間的間距 */
         }
         .modal-image {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
+            max-width: 100%; /* 圖片最大寬度 */
+            max-height: 100%; /* 圖片最大高度 */
+            object-fit: contain; /* 圖片保持比例，完整顯示在內容區 */
             display: block;
         }
-        .modal-description-area {
+        .modal-description-area { /* 描述區塊的整體容器 */
             color: #fff;
             text-align: center;
             font-size: 1.1em;
-            flex-grow: 1;
+            flex-grow: 1; /* 描述區塊佔據剩餘空間 */
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
+            align-items: center; /* 水平置中 */
         }
-        .modal-description-line {
+        .modal-description-line { /* 每一行描述或名稱 */
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: center; /* 水平置中 */
             margin-bottom: 5px;
         }
         .modal-description-line:last-child {
             margin-bottom: 0;
         }
-        .edit-icon, .map-icon {
-            cursor: pointer;
-            font-size: 1.2em;
+        /* SVG 圖標基礎樣式 */
+        .icon-svg {
+            width: 20px; /* 圖標大小 */
+            height: 20px;
             margin: 0 5px;
-            color: #87ceeb;
-            transition: color 0.2s ease;
+            fill: #aaa; /* 淺灰色 */
+            cursor: pointer;
+            transition: fill 0.2s ease;
         }
-        .edit-icon:hover, .map-icon:hover {
-            color: #fff;
+        .icon-svg:hover {
+            fill: #fff; /* hover 時點亮為白色 */
         }
-        .map-icon.disabled {
-            color: #666;
+        .map-icon-svg.disabled { /* 沒有連結時的地圖圖標 */
+            fill: #666; /* 變暗 */
             cursor: default;
         }
+
         .modal-description-line input {
             background-color: #333;
             color: #fff;
@@ -151,6 +168,8 @@
             max-width: 80%;
             box-sizing: border-box;
         }
+
+        /* 關閉按鈕 */
         .close-button {
             position: absolute;
             top: 10px;
@@ -166,20 +185,8 @@
         .close-button:hover {
             color: #ccc;
         }
-        .save-button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 8px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9em;
-            margin-top: 10px;
-            transition: background-color 0.3s ease;
-        }
-        .save-button:hover {
-            background-color: #45a049;
-        }
+
+        /* 分頁按鈕樣式 */
         .pagination-button {
             padding: 8px 12px;
             margin: 0 4px;
@@ -216,22 +223,20 @@
 
     <div id="image-modal-overlay" class="modal-overlay">
         <div class="modal-content">
-            <span class="close-button">×</span>
-            <div class="modal-image-wrapper">
+            <span class="close-button">×</span> <div class="modal-image-wrapper">
                 <img id="modal-image" class="modal-image" src="" alt="">
             </div>
             <div id="modal-description-area" class="modal-description-area">
                 <div id="location-line" class="modal-description-line">
-                    <span class="edit-icon" data-field="location">✎</span>
+                    <svg class="icon-svg edit-icon" data-field="location" viewBox="0 0 24 24" fill="currentColor"><path d="M7 17.5L4 20.5V23H6.5L9.5 20L7 17.5ZM20.71 5.04C20.32 4.65 19.68 4.65 19.29 5.04L17.71 6.63L20.37 9.29L21.96 7.71C22.35 7.32 22.35 6.68 21.96 6.29L20.71 5.04ZM16.37 7.96L14.79 6.37L7 14.16V16.71H9.55L17.37 8.96L16.37 7.96Z" /></svg>
                     <span id="modal-location-text"></span>
-                    <span class="map-icon" id="modal-map-icon">🗺️</span>
+                    <svg class="icon-svg map-icon-svg" id="modal-map-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 11.5A2.5 2.5 0 0 1 9.5 9A2.5 2.5 0 0 1 12 6.5A2.5 2.5 0 0 1 14.5 9A2.5 2.5 0 0 1 12 11.5M12 2A7 7 0 0 0 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9A7 7 0 0 0 12 2Z" /></svg>
                 </div>
                 <div id="description-line" class="modal-description-line">
-                    <span class="edit-icon" data-field="description">✎</span>
+                    <svg class="icon-svg edit-icon" data-field="description" viewBox="0 0 24 24" fill="currentColor"><path d="M7 17.5L4 20.5V23H6.5L9.5 20L7 17.5ZM20.71 5.04C20.32 4.65 19.68 4.65 19.29 5.04L17.71 6.63L20.37 9.29L21.96 7.71C22.35 7.32 22.35 6.68 21.96 6.29L20.71 5.04ZM16.37 7.96L14.79 6.37L7 14.16V16.71H9.55L17.37 8.96L16.37 7.96Z" /></svg>
                     <span id="modal-description-text"></span>
                 </div>
-                <button id="save-json-button" class="save-button hidden">儲存修改到本地 JSON</button>
-            </div>
+                </div>
         </div>
     </div>
 
@@ -251,7 +256,7 @@
         const modalDescriptionText = document.getElementById('modal-description-text');
         const modalMapIcon = document.getElementById('modal-map-icon');
         const closeButton = imageModalOverlay.querySelector('.close-button');
-        const saveJsonButton = document.getElementById('save-json-button');
+        // const saveJsonButton = document.getElementById('save-json-button'); // 移除此變數宣告
 
         let currentEditingItemIndex = -1;
 
@@ -289,12 +294,17 @@
             document.body.style.overflow = '';
             modalImage.src = '';
             currentEditingItemIndex = -1;
-            saveJsonButton.classList.add('hidden');
+            // saveJsonButton.classList.add('hidden'); // 移除此行
             document.querySelectorAll('.modal-description-line span.edit-icon').forEach(icon => {
                 const field = icon.dataset.field;
                 const textSpan = document.getElementById(`modal-${field}-text`);
                 if (textSpan.querySelector('input')) {
-                    textSpan.textContent = allImageData[currentEditingItemIndex !== -1 ? currentEditingItemIndex : 0][field];
+                    // 恢復為原始文字，如果編輯模式還在
+                    if (allImageData[currentEditingItemIndex] && allImageData[currentEditingItemIndex][field]) {
+                        textSpan.textContent = allImageData[currentEditingItemIndex][field];
+                    } else {
+                        textSpan.textContent = ''; // 或者適當的預設值
+                    }
                 }
             });
             if (modalMapIcon.previousElementSibling && modalMapIcon.previousElementSibling.tagName === 'INPUT') {
@@ -391,44 +401,42 @@
 
             allImageData[currentEditingItemIndex][field] = value;
             console.log(`更新了 ${field}:`, value);
-            saveJsonButton.classList.remove('hidden');
+            // saveJsonButton.classList.remove('hidden'); // 移除此行
         }
 
-        saveJsonButton.addEventListener('click', () => {
-            const jsonString = JSON.stringify(allImageData, null, 2);
+        // saveJsonButton.addEventListener('click', () => { // 移除此事件監聽器
+        //     const jsonString = JSON.stringify(allImageData, null, 2);
 
-            const blob = new Blob([jsonString], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
+        //     const blob = new Blob([jsonString], { type: 'application/json' });
+        //     const url = URL.createObjectURL(blob);
 
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'data.json';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+        //     const a = document.createElement('a');
+        //     a.href = url;
+        //     a.download = 'data.json';
+        //     document.body.appendChild(a);
+        //     a.click();
+        //     document.body.removeChild(a);
+        //     URL.revokeObjectURL(url);
 
-            alert('data.json 已下載到您的電腦。\n請將它替換您本地專案資料夾中的 data.json，然後再推送到 GitHub。');
-            saveJsonButton.classList.add('hidden');
-        });
+        //     alert('data.json 已下載到您的電腦。\n請將它替換您本地專案資料夾中的 data.json，然後再推送到 GitHub。');
+        //     saveJsonButton.classList.add('hidden');
+        // });
 
 
         async function fetchData() {
             try {
                 const response = await fetch('data.json');
                 if (!response.ok) {
-                    throw new Error(`無法載入資料: <span class="math-inline">\{response\.statusText\} \(</span>{response.status})`);
+                    throw new Error(`無法載入資料: ${response.statusText} (${response.status})`);
                 }
                 allImageData = await response.json();
 
-                // Ensure allImageData is an array of items (for Decap CMS compatibility)
                 if (allImageData && typeof allImageData === 'object' && 'items' in allImageData && Array.isArray(allImageData.items)) {
                     allImageData = allImageData.items;
                 } else if (!Array.isArray(allImageData)) {
                     console.warn("data.json 格式不符預期，應為陣列或包含 'items' 鍵的物件。");
-                    allImageData = []; // 重置為空陣列以避免錯誤
+                    allImageData = [];
                 }
-
 
                 displayImages(currentPage);
                 renderPagination();
