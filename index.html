@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Li's photo</title>
+    <title>LKH Photos</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* 網站背景設為全黑，文字為白色 */
@@ -91,7 +91,6 @@
             color: #f0f0f0;
         }
 
-
         /* --- MODAL STYLES START --- */
         .modal-overlay {
             position: fixed;
@@ -153,13 +152,11 @@
             overflow-y: auto; /* 如果內容過多則允許滾動 */
             text-align: center; /* 預設描述區塊內的文字置中 */
         }
-       
+        
         .modal-description-line {
             display: flex;
             align-items: center;
-            /* --- CHANGE START: Justify content for the line itself --- */
-            justify-content: center; /* 讓行內的 flex item 置中 */
-            /* --- CHANGE END --- */
+            justify-content: center; 
             margin-bottom: 8px; /* 調整行間距 */
             width: 100%; 
         }
@@ -171,20 +168,10 @@
             margin: 0 8px; 
             white-space: normal; /* 允許文字換行 */
             overflow-wrap: break-word; /* 處理長單詞換行 */
-            /* --- CHANGE START: Text alignment for view mode text spans --- */
-            /* flex-grow: 1;  移除，讓文字內容自身寬度，由父級 .modal-description-line 的 justify-content:center 控制 */
             display: inline-block; 
-            text-align: center; /* 確保文字本身也是置中的 (對於多行文字) */
-            /* --- CHANGE END --- */
+            text-align: center; 
         }
         
-        /* 編輯模式下輸入框靠左 */
-        .modal-overlay.active.admin-mode-active .modal-location-text,
-        .modal-overlay.active.admin-mode-active .modal-description-text {
-            text-align: left; /* 雖然它們在編輯模式下是 display:none，以防萬一 */
-        }
-
-
         .modal-location-text {
             font-weight: 600; 
             font-size: 1.25em; /* 地點名稱加大 */
@@ -224,82 +211,6 @@
             cursor: default;
         }
 
-        .modal-description-line input[type="text"],
-        .modal-description-line textarea {
-            background-color: #2c2c2c; /* 輸入框背景 */
-            color: #e0e0e0;
-            border: 1px solid #444; /* 邊框顏色 */
-            border-radius: 6px; /* 圓角 */
-            padding: 8px 12px; /* 內邊距 */
-            margin: 0 5px;
-            width: 100%; 
-            box-sizing: border-box;
-            font-size: 0.95em;
-            flex-grow: 1; /* 讓輸入框佔滿可用空間 */
-            text-align: left; /* 編輯模式下輸入框文字靠左 */
-        }
-        .modal-description-line input[type="text"] {
-             white-space: nowrap; /* 單行輸入框不換行 */
-             overflow: hidden;
-             text-overflow: ellipsis;
-        }
-        .modal-description-line textarea {
-            min-height: 60px; /* 描述欄位最小高度 */
-            resize: vertical; /* 只允許垂直調整大小 */
-            white-space: pre-wrap; /* 保留換行和空格 */
-            overflow-wrap: break-word;
-        }
-
-        .modal-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 12px; 
-            margin-top: 20px; /* 頂部間距加大 */
-        }
-        .modal-buttons button {
-            padding: 10px 20px; /* 按鈕內邊距加大 */
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s ease, transform 0.1s ease;
-            border: none;
-            font-size: 0.9em;
-            letter-spacing: 0.5px; /* 字間距 */
-        }
-        .modal-buttons button:active {
-            transform: scale(0.98); /* 按下時微縮效果 */
-        }
-        .confirm-button {
-            background-color: #4CAF50; /* 確認按鈕 - 綠色 */
-            color: white;
-        }
-        .confirm-button:hover {
-            background-color: #388E3C; /* 深一點的綠色 */
-        }
-        .cancel-button {
-            background-color: #f44336; /* 取消按鈕 - 紅色 */
-            color: white;
-        }
-        .cancel-button:hover {
-            background-color: #D32F2F; /* 深一點的紅色 */
-        }
-        .close-button {
-            position: absolute;
-            top: 12px;
-            right: 18px;
-            color: #aaa;
-            font-size: 2.5em; /* 加大關閉按鈕 */
-            cursor: pointer;
-            z-index: 1001;
-            font-weight: 300; /* 細一點的 X */
-            line-height: 1;
-            padding: 5px; /* 增加點擊區域 */
-            transition: color 0.2s ease, transform 0.2s ease;
-        }
-        .close-button:hover {
-            color: #fff;
-            transform: rotate(90deg); /* Hover 時旋轉效果 */
-        }
         /* --- MODAL STYLES END --- */
 
         .pagination-button {
@@ -330,160 +241,12 @@
             border-color: #333;
         }
         
-        .login-button {
-            padding: 9px 18px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: background-color 0.2s ease, transform 0.1s ease;
-            white-space: nowrap; 
-            font-size: 0.9em;
-            letter-spacing: 0.3px;
-        }
-         .login-button:active {
-            transform: scale(0.98);
-        }
-
-        .login-button {
-            background-color: #007bff;
-            color: white;
-        }
-        .login-button:hover {
-            background-color: #0056b3;
-        }
-      
-        .admin-mode-label {
-            display: flex;
-            align-items: center;
-            gap: 8px; /* 圖示與文字間距 */
-            cursor: pointer;
-            font-size: 0.9em;
-            color: #ccc;
-            margin-right: 10px; /* 與登入按鈕的間距 */
-        }
-        .admin-mode-label.hidden {
-            display: none;
-        }
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 44px; /* 開關寬度 */
-            height: 24px; /* 開關高度 */
-        }
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #4d4d4d; /* 關閉時背景色 */
-            transition: .3s;
-            border-radius: 24px; /* 使其為圓角矩形 */
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px; /* 滑塊高度 */
-            width: 18px; /* 滑塊寬度 */
-            left: 3px; /* 滑塊左邊距 */
-            bottom: 3px; /* 滑塊底邊距 */
-            background-color: white;
-            transition: .3s;
-            border-radius: 50%; /* 圓形滑塊 */
-        }
-        input:checked + .slider {
-            background-color: #ffc107; /* 開啟時背景色 (黃色) */
-        }
-        input:focus + .slider {
-            box-shadow: 0 0 1px #ffc107;
-        }
-        input:checked + .slider:before {
-            transform: translateX(20px); /* 滑塊移動距離 */
-        }
-        .admin-mode-label-text.active {
-            color: #ffc107; /* 啟用時文字顏色 */
-            font-weight: bold;
-        }
-
-        /* 編輯模式下元素的顯示/隱藏 */
-        /* 預設隱藏編輯圖標和輸入框 */
-        .modal-description-line .edit-icon,
-        .modal-description-line input[type="text"],
-        .modal-description-line textarea,
-        .modal-description-line .map-icon-svg.editable { 
-            display: none;
-        }
-        .modal-buttons {
-             display: none; 
-        }
-
-        /* 非管理模式：顯示文字，顯示不可編輯的地圖圖標 (如果有效) */
-        .modal-overlay.active:not(.admin-mode-active) .modal-location-text,
-        .modal-overlay.active:not(.admin-mode-active) .modal-description-text {
-            display: inline-block; /* 或者 block 如果希望它們獨占一行 */
-        }
-         /* 控制非編輯模式下的地圖圖標顯示 */
-        .modal-overlay.active:not(.admin-mode-active) #location-line #modal-view-map-icon:not(.disabled) {
-            display: inline-block; /* 只有 view icon 且有效時顯示 */
-        }
-        .modal-overlay.active:not(.admin-mode-active) #location-line #modal-view-map-icon.disabled {
-            display: inline-block; /* 即使無效也顯示，但為 disabled 樣式 */
-        }
-         .modal-overlay.active:not(.admin-mode-active) #location-line #modal-edit-map-icon {
-            display: none; /* 非編輯模式下，隱藏編輯用地圖圖示 */
-        }
-
-
-        /* 管理模式：顯示編輯圖標、輸入框、按鈕，隱藏純文字 */
-        .modal-overlay.active.admin-mode-active .modal-description-line .edit-icon,
-        .modal-overlay.active.admin-mode-active #location-line #modal-edit-map-icon.editable { /* 編輯用地圖圖標在編輯模式下顯示 */
-            display: inline-block;
-        }
-         .modal-overlay.active.admin-mode-active #location-line #modal-view-map-icon {
-            display: none; /* 編輯模式下，隱藏僅供檢視的地圖圖示 */
-        }
-
-        .modal-overlay.active.admin-mode-active .modal-location-text,
-        .modal-overlay.active.admin-mode-active .modal-description-text {
-            display: none;
-        }
-        .modal-overlay.active.admin-mode-active .modal-description-line input[type="text"],
-        .modal-overlay.active.admin-mode-active .modal-description-line textarea {
-            display: block; 
-        }
-        .modal-overlay.active.admin-mode-active .modal-buttons {
-            display: flex;
-        }
-        .modal-overlay.active.admin-mode-active #location-line #modal-edit-map-icon.editable:not(.disabled) {
-            display: inline-block !important; 
-        }
-         .modal-overlay.active.admin-mode-active #location-line #modal-edit-map-icon.editable.disabled {
-            display: inline-block !important; /* 即使在編輯模式下連結無效，也顯示圖標，但可能是 disabled 樣式 */
-        }
-
-
     </style>
 </head>
 <body class="font-sans">
     
     <header class="sticky-header flex justify-between items-center px-4 md:px-6 py-3">
         <a href="#" id="home-link" class="text-xl font-semibold text-white transition-colors hover:text-gray-300" style="text-decoration: none;">LKH Photos</a>
-        <div class="flex items-center gap-x-3 md:gap-x-4">
-            <label id="admin-mode-label" class="admin-mode-label hidden" for="admin-mode-checkbox">
-                <span id="admin-mode-label-text">管理模式</span>
-                <div class="toggle-switch">
-                    <input type="checkbox" id="admin-mode-checkbox">
-                    <span class="slider"></span>
-                </div>
-            </label>
-            <a href="http://127.0.0.1:5000/login/github" class="login-button">登入</a>
-        </div>
     </header>
 
     <main class="container mx-auto px-4 py-6 md:py-8">
@@ -499,22 +262,11 @@
             </div>
             <div id="modal-description-area" class="modal-description-area">
                 <div id="location-line" class="modal-description-line">
-                    <svg class="icon-svg edit-icon" data-field="location" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
                     <span id="modal-location-text"></span> 
-                    <input type="text" id="modal-location-input" placeholder="編輯地點" />
-                    <!-- 地圖圖標：新增一個僅在非編輯模式顯示的，並修改原有的為編輯模式專用 -->
                     <svg class="icon-svg map-icon-svg" id="modal-view-map-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                    <svg class="icon-svg map-icon-svg editable" id="modal-edit-map-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                    <input type="text" id="modal-maplink-input" placeholder="編輯地圖連結 (可選)" />
                 </div>
                 <div id="description-line" class="modal-description-line">
-                    <svg class="icon-svg edit-icon" data-field="description" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
                     <span id="modal-description-text"></span> 
-                    <textarea id="modal-description-input" placeholder="編輯描述 (可選)" rows="3"></textarea>
-                </div>
-                <div class="modal-buttons">
-                    <button id="confirm-edit-button" class="confirm-button">確認儲存</button>
-                    <button id="cancel-edit-button" class="cancel-button">取消編輯</button>
                 </div>
             </div>
         </div>
@@ -522,258 +274,57 @@
 
     <script>
         const API_BASE_URL = 'http://127.0.0.1:5000'; 
-        const CMS_ADMIN_URL = 'https://lkh-photo-site.netlify.app/';
-
         const imagesPerPage = 9;
         const maxPageButtons = 7;
         let currentPage = 1;
         let allImageData = [];
-        let isLoggedIn = false;
-        let isAdminMode = false;
 
         const imageGrid = document.getElementById('image-grid');
         const paginationDiv = document.getElementById('pagination');
-        const loginButton = document.querySelector('.login-button');
         
-        const adminModeLabel = document.getElementById('admin-mode-label');
-        const adminModeCheckbox = document.getElementById('admin-mode-checkbox');
-        const adminModeLabelText = document.getElementById('admin-mode-label-text');
-
         const imageModalOverlay = document.getElementById('image-modal-overlay');
         const modalImage = document.getElementById('modal-image');
         const modalLocationText = document.getElementById('modal-location-text');
         const modalDescriptionText = document.getElementById('modal-description-text');
-        
         const modalViewMapIcon = document.getElementById('modal-view-map-icon');
-        const modalEditMapIcon = document.getElementById('modal-edit-map-icon');
-
-        const modalLocationInput = document.getElementById('modal-location-input');
-        const modalDescriptionInput = document.getElementById('modal-description-input'); 
-        const modalMapLinkInput = document.getElementById('modal-maplink-input');
-        const confirmEditButton = document.getElementById('confirm-edit-button');
-        const cancelEditButton = document.getElementById('cancel-edit-button');
         const closeButton = imageModalOverlay.querySelector('.close-button');
         const homeLink = document.getElementById('home-link');
-
-        let currentEditingItemIndex = -1;
 
         function openModal(imageIndex) {
             const image = allImageData[imageIndex];
             if (!image) return;
 
-            currentEditingItemIndex = imageIndex;
             modalImage.src = image.src;
             modalImage.alt = image.alt || '圖片';
 
             modalLocationText.textContent = image.location || '無地點資訊';
             modalDescriptionText.textContent = image.description || '無描述資訊';
             
-            modalLocationInput.value = image.location || '';
-            modalDescriptionInput.value = image.description || ''; 
-            modalMapLinkInput.value = image.mapLink || '';
-
             const isMapLinkValid = image.mapLink && image.mapLink.trim() !== '' && image.mapLink.trim().toLowerCase() !== '請貼上 google 地圖連結' && image.mapLink.trim().toLowerCase() !== '#';
-
-            // 先重設圖標狀態
-            modalViewMapIcon.style.display = 'none';
-            modalEditMapIcon.style.display = 'none';
-            modalViewMapIcon.classList.add('disabled');
-            modalEditMapIcon.classList.add('disabled');
-            modalViewMapIcon.onclick = null;
-            modalEditMapIcon.onclick = null;
-
-
-            if (isLoggedIn && isAdminMode) {
-                imageModalOverlay.classList.add('admin-mode-active');
-                modalEditMapIcon.style.display = 'inline-block'; // 編輯模式下顯示編輯圖標
-                if (isMapLinkValid) {
-                    modalEditMapIcon.classList.remove('disabled');
-                    // 編輯模式下點擊地圖圖標通常是為了打開連結預覽，或未來可以做成編輯連結的入口
-                    modalEditMapIcon.onclick = () => window.open(image.mapLink, '_blank'); 
-                }
+            
+            if (isMapLinkValid) {
+                modalViewMapIcon.classList.remove('disabled');
+                modalViewMapIcon.onclick = () => window.open(image.mapLink, '_blank');
+                modalViewMapIcon.style.display = 'inline-block';
             } else {
-                imageModalOverlay.classList.remove('admin-mode-active');
-                modalViewMapIcon.style.display = 'inline-block'; // 檢視模式下顯示檢視圖標
-                if (isMapLinkValid) {
-                    modalViewMapIcon.classList.remove('disabled');
-                    modalViewMapIcon.onclick = () => window.open(image.mapLink, '_blank');
-                }
+                modalViewMapIcon.classList.add('disabled');
+                modalViewMapIcon.onclick = null;
+                modalViewMapIcon.style.display = 'inline-block';
             }
+            
             imageModalOverlay.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
 
         function closeModal() {
             imageModalOverlay.classList.remove('active');
-            imageModalOverlay.classList.remove('admin-mode-active');
             document.body.style.overflow = '';
             modalImage.src = '';
-            currentEditingItemIndex = -1;
         }
 
         closeButton.addEventListener('click', closeModal);
         imageModalOverlay.addEventListener('click', (event) => {
             if (event.target === imageModalOverlay) closeModal();
-        });
-
-        confirmEditButton.addEventListener('click', async () => {
-            if (currentEditingItemIndex === -1 || !allImageData[currentEditingItemIndex]) return;
-            const originalItem = allImageData[currentEditingItemIndex];
-            const updatedItem = { ...originalItem };
-
-            updatedItem.location = modalLocationInput.value.trim();
-            updatedItem.description = modalDescriptionInput.value.trim(); 
-            updatedItem.mapLink = modalMapLinkInput.value.trim();
-
-            const hasChanged = originalItem.location !== updatedItem.location ||
-                               originalItem.description !== updatedItem.description ||
-                               originalItem.mapLink !== updatedItem.mapLink;
-
-            if (!hasChanged) {
-                closeModal();
-                return; 
-            }
-            
-            allImageData[currentEditingItemIndex] = updatedItem;
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/update-data-json`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json',},
-                    credentials: 'include', 
-                    body: JSON.stringify({ items: allImageData }),
-                });
-                const result = await response.json();
-                if (response.ok) {
-                    alert('資料已成功更新到 GitHub！網站將重新載入以顯示最新內容。');
-                    location.reload();
-                } else {
-                    console.error('資料更新失敗:', result);
-                    alert(`資料更新失敗: ${result.message || '未知錯誤'}\n錯誤詳情請查看主控台。`);
-                    if (response.status === 401) {
-                        sessionStorage.setItem('pendingAdminAction', 'true'); 
-                        window.location.href = `${API_BASE_URL}/login/github`; 
-                    }
-                }
-            } catch (error) {
-                console.error('發送更新請求時發生網路錯誤:', error);
-                alert('發送更新請求時發生網路錯誤。');
-            }
-            closeModal();
-        });
-
-        cancelEditButton.addEventListener('click', closeModal);
-
-        async function checkAuthStatus() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/auth_status`, {
-                    credentials: 'include' 
-                });
-                const data = await response.json();
-                isLoggedIn = data.is_logged_in;
-
-                if (isLoggedIn) {
-                    loginButton.textContent = `登出 (${data.username || '使用者'})`;
-                    loginButton.href = '#'; 
-                    loginButton.onclick = async (e) => {
-                        e.preventDefault();
-                        if (confirm('您確定要登出嗎？')) {
-                            try {
-                                const logoutResponse = await fetch(`${API_BASE_URL}/api/logout`, { 
-                                    method: 'POST', 
-                                    credentials: 'include' 
-                                });
-                                if (logoutResponse.ok) {
-                                    // alert('您已成功登出。網頁將重新載入。'); // 由後端清除 session 後，前端重載即可
-                                } else {
-                                     // alert('登出時發生問題，但仍會嘗試清除前端狀態。');
-                                }
-                            } catch (logoutError) {
-                                console.error("調用後端登出時發生錯誤:", logoutError);
-                                // alert("登出請求失敗，將嘗試清除前端狀態。");
-                            }
-                            // 無論後端登出API是否成功，都執行前端的清理和重載
-                            sessionStorage.removeItem('github_access_token'); 
-                            isAdminMode = false; 
-                            updateAdminToggleUI(); 
-                            location.reload(true); 
-                        }
-                    };
-                    adminModeLabel.classList.remove('hidden'); 
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const adminFromUrl = urlParams.get('admin') === 'true';
-                    const pendingAdmin = sessionStorage.getItem('pendingAdminAction') === 'true';
-
-                    if (adminFromUrl || pendingAdmin) {
-                        isAdminMode = true; 
-                        if(pendingAdmin) sessionStorage.removeItem('pendingAdminAction');
-                    } else {
-                        // 如果 URL 中沒有 admin=true，則根據 isAdminMode 的當前值（可能來自 session 或上次操作）來決定
-                        // 這裡保持 isAdminMode 不變，讓 updateAdminToggleUI 去同步 checkbox 和 URL
-                    }
-                    updateAdminToggleUI(); 
-
-                } else { 
-                    loginButton.textContent = '登入';
-                    loginButton.href = `${API_BASE_URL}/login/github`;
-                    loginButton.onclick = null;
-                    adminModeLabel.classList.add('hidden'); 
-                    isAdminMode = false; 
-                    updateAdminToggleUI();
-                }
-            } catch (error) {
-                console.error('檢查登入狀態失敗:', error);
-                isLoggedIn = false;
-                loginButton.textContent = '登入';
-                loginButton.href = `${API_BASE_URL}/login/github`;
-                loginButton.onclick = null;
-                adminModeLabel.classList.add('hidden');
-                isAdminMode = false;
-                updateAdminToggleUI();
-            }
-        }
-        
-        function updateAdminToggleUI(fromCheckboxChange = false) {
-            adminModeCheckbox.checked = isAdminMode;
-            if (isAdminMode && isLoggedIn) { // 只有登入時，管理模式才能真正啟用
-                adminModeLabelText.textContent = '管理模式 (啟用)';
-                adminModeLabelText.classList.add('active');
-            } else {
-                adminModeLabelText.textContent = '管理模式';
-                adminModeLabelText.classList.remove('active');
-                isAdminMode = false; // 確保內部狀態也更新
-                adminModeCheckbox.checked = false; // 同步 checkbox
-            }
-
-            if (!fromCheckboxChange) { 
-                const urlParams = new URLSearchParams(window.location.search);
-                if (isAdminMode && isLoggedIn) { 
-                    urlParams.set('admin', 'true');
-                } else {
-                    urlParams.delete('admin');
-                }
-                const currentSearch = window.location.search.replace(/^\?/, ''); 
-                const newSearch = urlParams.toString();
-                if (currentSearch !== newSearch) {
-                     history.replaceState(null, '', newSearch ? `?${newSearch}` : window.location.pathname + window.location.hash);
-                }
-            }
-            // 在這裡不需要重新渲染 displayImages，除非有特定UI依賴於此處的isAdminMode更新
-            // openModal 會根據最新的 isAdminMode 狀態來渲染
-        }
-
-        adminModeCheckbox.addEventListener('change', () => {
-            if (!isLoggedIn) { 
-                adminModeCheckbox.checked = false;
-                isAdminMode = false; // 確保狀態同步
-                updateAdminToggleUI(true); // 更新UI，但實際上不會進入啟用狀態
-                return;
-            }
-            isAdminMode = adminModeCheckbox.checked;
-            updateAdminToggleUI(true); 
-            if (imageModalOverlay.classList.contains('active') && currentEditingItemIndex !== -1) {
-                openModal(currentEditingItemIndex);
-            }
         });
 
         homeLink.addEventListener('click', (e) => {
@@ -798,174 +349,116 @@
                 }
                 let rawData = await response.json();
                 allImageData = (rawData && Array.isArray(rawData.items)) ? rawData.items : (Array.isArray(rawData) ? rawData : []);
-                
-                const urlParams = new URLSearchParams(window.location.search);
-                const pageFromUrl = parseInt(urlParams.get('page'), 10);
-                if (pageFromUrl && pageFromUrl > 0 && pageFromUrl <= Math.ceil(allImageData.length / imagesPerPage)) {
-                    currentPage = pageFromUrl;
-                }
-
-                await checkAuthStatus(); 
-                displayImages(currentPage); 
-                renderPagination(); 
-                 
+                displayImages(currentPage);
+                renderPagination();
             } catch (error) {
-                console.error("獲取資料失敗:", error);
-                imageGrid.innerHTML = `<p class="text-red-500 text-center col-span-full">無法載入圖片資料。請確保 data.json 檔案存在於正確的路徑。錯誤: ${error.message}</p>`;
+                console.error('載入圖片資料失敗:', error);
+                imageGrid.innerHTML = '<p class="text-center text-red-500">載入圖片資料失敗。請稍後再試。</p>';
+                paginationDiv.innerHTML = '';
             }
         }
 
         function displayImages(page) {
-            imageGrid.innerHTML = ''; 
+            imageGrid.innerHTML = '';
             const startIndex = (page - 1) * imagesPerPage;
             const endIndex = startIndex + imagesPerPage;
-            const currentImages = allImageData.slice(startIndex, endIndex);
+            const pageImages = allImageData.slice(startIndex, endIndex);
 
-            if (allImageData.length === 0) {
-                 imageGrid.innerHTML = `<p class="text-gray-400 text-center col-span-full py-10">目前沒有任何圖片可顯示。</p>`;
-                 return;
-            }
-            if (currentImages.length === 0 && page > 1) { 
-                 imageGrid.innerHTML = `<p class="text-gray-400 text-center col-span-full py-10">此頁面沒有圖片。嘗試返回上一頁或首頁。</p>`;
-                 return;
-            }
-
-            currentImages.forEach((image, localIndex) => {
-                const globalIndex = startIndex + localIndex; 
+            pageImages.forEach((image, index) => {
+                const globalIndex = startIndex + index;
                 const imageContainer = document.createElement('div');
-                imageContainer.className = 'image-container group'; 
-                imageContainer.dataset.imageIndex = globalIndex;
+                imageContainer.className = 'image-container';
+                imageContainer.dataset.index = globalIndex;
 
-                const img = document.createElement('img');
-                img.src = image.src; 
-                img.alt = image.alt || image.description || `圖片 ${globalIndex + 1}`;
-                img.className = 'w-full h-full object-cover block transition-transform duration-300 ease-in-out group-hover:scale-105'; 
-                
-                const loader = document.createElement('div');
-                loader.className = 'image-loader';
-                
+                const img = new Image();
+                img.src = image.src;
+                img.alt = image.alt || '圖片';
                 img.onload = () => {
-                    imageContainer.classList.add('loaded'); 
-                    loader.style.display = 'none'; 
+                    imageContainer.classList.add('loaded');
                 };
                 img.onerror = () => {
-                    console.error('圖片載入失敗:', img.src);
-                    imageContainer.classList.add('loaded'); 
-                    loader.style.display = 'none';
-                    img.alt = '圖片載入失敗';
-                    imageContainer.style.backgroundColor = '#444'; 
-                    const errorText = document.createElement('p');
-                    errorText.textContent = '無法載入圖片';
-                    errorText.className = 'text-xs text-gray-300 p-2';
-                    imageContainer.appendChild(errorText);
+                    imageContainer.innerHTML = '<p class="text-gray-400 text-sm p-4">圖片載入失敗</p>';
                 };
 
-                imageContainer.appendChild(loader);
+                const loader = document.createElement('div');
+                loader.className = 'image-loader';
+
                 imageContainer.appendChild(img);
+                imageContainer.appendChild(loader);
 
-                imageContainer.addEventListener('click', () => openModal(globalIndex));
+                if (image.location) {
+                    const overlay = document.createElement('div');
+                    overlay.className = 'overlay';
+                    const locationText = document.createElement('span');
+                    locationText.className = 'location-text';
+                    locationText.textContent = image.location;
+                    overlay.appendChild(locationText);
+                    imageContainer.appendChild(overlay);
+                }
+                
+                imageContainer.addEventListener('click', () => {
+                    openModal(globalIndex);
+                });
 
-                const overlay = document.createElement('div');
-                overlay.className = 'overlay opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out';
-
-                const locationOverlaySpan = document.createElement('span');
-                locationOverlaySpan.className = 'location-text font-semibold text-sm truncate'; 
-                locationOverlaySpan.textContent = image.location || '未知地點';
-                overlay.appendChild(locationOverlaySpan);
-
-                imageContainer.appendChild(overlay);
                 imageGrid.appendChild(imageContainer);
             });
-            
-            const urlParams = new URLSearchParams(window.location.search);
-            if (page > 1) {
-                urlParams.set('page', page);
-            } else {
-                urlParams.delete('page');
-            }
-            const adminParam = urlParams.get('admin'); 
-            const finalParams = new URLSearchParams();
-            if (page > 1) finalParams.set('page', page);
-            if (adminParam) finalParams.set('admin', adminParam); // 保留 admin 參數
-            const newQueryString = finalParams.toString();
-            const currentQueryString = window.location.search.substring(1);
-            if (newQueryString !== currentQueryString) {
-                 history.replaceState(null, '', newQueryString ? `?${newQueryString}` : window.location.pathname + window.location.hash);
-            }
         }
 
         function renderPagination() {
-            paginationDiv.innerHTML = ''; 
+            paginationDiv.innerHTML = '';
             const totalPages = Math.ceil(allImageData.length / imagesPerPage);
             if (totalPages <= 1) return;
 
-            let startPage, endPage;
-            const pageSpread = Math.floor((maxPageButtons - 3) / 2); 
-            
-            if (totalPages <= maxPageButtons) {
-                startPage = 1;
-                endPage = totalPages;
-            } else {
-                if (currentPage <= pageSpread + 1) { 
-                    startPage = 1;
-                    endPage = maxPageButtons - 2; 
-                } else if (currentPage >= totalPages - pageSpread) { 
-                    startPage = totalPages - (maxPageButtons - 3); 
-                    endPage = totalPages;
-                } else { 
-                    startPage = currentPage - pageSpread;
-                    endPage = currentPage + pageSpread;
-                }
-            }
-            startPage = Math.max(1, startPage);
-            endPage = Math.min(totalPages, endPage);
+            const startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+            const endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
 
-
-            const createButton = (text, pageNum, isActive = false, isDisabled = false, isEllipsis = false) => {
-                if (isEllipsis) {
-                    const ellipsis = document.createElement('span');
-                    ellipsis.textContent = text;
-                    ellipsis.className = 'pagination-button disabled cursor-default px-2';
-                    paginationDiv.appendChild(ellipsis);
-                    return;
-                }
-
+            const createButton = (text, page, isActive, isDisabled) => {
                 const button = document.createElement('button');
-                button.innerHTML = text; 
+                button.textContent = text;
                 button.className = 'pagination-button';
                 if (isActive) button.classList.add('active');
-                if (isDisabled) {
-                    button.classList.add('disabled');
-                    button.disabled = true;
-                } else {
+                if (isDisabled) button.classList.add('disabled');
+                button.disabled = isDisabled;
+                if (!isDisabled) {
                     button.addEventListener('click', () => {
-                        currentPage = pageNum;
+                        currentPage = page;
                         displayImages(currentPage);
                         renderPagination();
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                     });
                 }
-                paginationDiv.appendChild(button);
+                return button;
             };
-            
-            createButton('&laquo; 上一頁', currentPage - 1, false, currentPage === 1);
+
+            paginationDiv.appendChild(createButton('«', currentPage - 1, false, currentPage === 1));
 
             if (startPage > 1) {
-                createButton('1', 1);
-                if (startPage > 2) createButton('...', 0, false, true, true);
+                paginationDiv.appendChild(createButton('1', 1, false, false));
+                if (startPage > 2) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.textContent = '...';
+                    ellipsis.className = 'mx-1 text-gray-400';
+                    paginationDiv.appendChild(ellipsis);
+                }
             }
 
             for (let i = startPage; i <= endPage; i++) {
-                createButton(i.toString(), i, i === currentPage);
+                paginationDiv.appendChild(createButton(i, i, i === currentPage, false));
             }
 
             if (endPage < totalPages) {
-                if (endPage < totalPages - 1) createButton('...', 0, false, true, true);
-                createButton(totalPages.toString(), totalPages);
+                if (endPage < totalPages - 1) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.textContent = '...';
+                    ellipsis.className = 'mx-1 text-gray-400';
+                    paginationDiv.appendChild(ellipsis);
+                }
+                paginationDiv.appendChild(createButton(totalPages, totalPages, false, false));
             }
-            
-            createButton('下一頁 &raquo;', currentPage + 1, false, currentPage === totalPages);
+
+            paginationDiv.appendChild(createButton('»', currentPage + 1, false, currentPage === totalPages));
         }
+
         fetchData();
     </script>
 </body>
